@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OfiTech - Gestão de Oficinas</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="topo">
+        <h1>OfiTech</h1>
+        <p>Sistema de Gestão para Oficinas Mecânicas</p>
+    </header>
+
+    <main class="container">
+
+        <section class="boas-vindas">
+            <h2>Bem-vindo ao OfiTech</h2>
+            <p>Gerencie clientes, veículos, serviços e ordens de serviço.</p>
+        </section>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>Clientes</h3>
+                <p>Cadastre e consulte clientes da oficina.</p>
+                <button onclick="listarClientes()">Listar clientes</button>
+            </div>
+
+            <div class="card">
+                <h3>Veículos</h3>
+                <p>Em breve você poderá cadastrar veículos.</p>
+                <button disabled>Em breve</button>
+            </div>
+
+            <div class="card">
+                <h3>Ordens de Serviço</h3>
+                <p>Controle os serviços realizados.</p>
+                <button disabled>Em breve</button>
+            </div>
+
+        </section>
+
+        <section class="resultado">
+
+            <h2>Clientes cadastrados</h2>
+
+            <button onclick="listarClientes()">Atualizar lista</button>
+
+            <div id="listaClientes">
+                Clique em “Listar clientes” para consultar os clientes.
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

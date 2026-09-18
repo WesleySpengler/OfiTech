@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f6fc;
+    color: #1f2937;
+}
+
+.topo {
+    background: #0d47a1;
+    color: white;
+    text-align: center;
+    padding: 35px 20px;
+}
+
+.topo h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.topo p {
+    font-size: 18px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+.boas-vindas {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 10px #00000012;
+}
+
+.boas-vindas h2 {
+    color: #0d47a1;
+    margin-bottom: 10px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px #00000012;
+}
+
+.card h3 {
+    color: #0d47a1;
+    margin-bottom: 12px;
+}
+
+.card p {
+    margin-bottom: 20px;
+}
+
+button {
+    background: #0d47a1;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #083477;
+}
+
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+.resultado {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 25px;
+    box-shadow: 0 3px 10px #00000012;
+}
+
+.resultado h2 {
+    color: #0d47a1;
+    margin-bottom: 15px;
+}
+
+#listaClientes {
+    margin-top: 20px;
+}
+
+.cliente {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
