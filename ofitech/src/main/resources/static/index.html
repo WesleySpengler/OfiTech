@@ -13,52 +13,184 @@
 <body>
 
     <header class="topo">
-        <h1>OfiTech</h1>
-        <p>Sistema de Gestão para Oficinas Mecânicas</p>
+
+        <div class="topo-conteudo">
+
+            <div>
+                <h1>OfiTech</h1>
+                <p>Sistema de Gestão para Oficinas Mecânicas</p>
+            </div>
+
+            <nav class="menu">
+
+                <button onclick="mostrarInicio()">
+                    Início
+                </button>
+
+                <button onclick="mostrarClientes()">
+                    Clientes
+                </button>
+
+                <button disabled>
+                    Veículos
+                </button>
+
+                <button disabled>
+                    Ordens de Serviço
+                </button>
+
+            </nav>
+
+        </div>
+
     </header>
+
 
     <main class="container">
 
-        <section class="boas-vindas">
-            <h2>Bem-vindo ao OfiTech</h2>
-            <p>Gerencie clientes, veículos, serviços e ordens de serviço.</p>
+
+        <!-- INÍCIO -->
+
+        <section id="telaInicio">
+
+            <section class="boas-vindas">
+
+                <h2>Bem-vindo ao OfiTech</h2>
+
+                <p>
+                    Gerencie clientes, veículos e ordens de serviço
+                    da sua oficina em um só lugar.
+                </p>
+
+            </section>
+
+
+            <section class="cards">
+
+                <div class="card">
+
+                    <h3>Clientes</h3>
+
+                    <p>
+                        Cadastre e consulte os clientes
+                        da oficina.
+                    </p>
+
+                    <button onclick="mostrarClientes()">
+                        Acessar clientes
+                    </button>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h3>Veículos</h3>
+
+                    <p>
+                        Gerencie os veículos vinculados
+                        aos seus clientes.
+                    </p>
+
+                    <button disabled>
+                        Em breve
+                    </button>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h3>Ordens de Serviço</h3>
+
+                    <p>
+                        Controle serviços, peças,
+                        valores e status.
+                    </p>
+
+                    <button disabled>
+                        Em breve
+                    </button>
+
+                </div>
+
+            </section>
+
         </section>
 
-        <section class="cards">
 
-            <div class="card">
-                <h3>Clientes</h3>
-                <p>Cadastre e consulte clientes da oficina.</p>
-                <button onclick="listarClientes()">Listar clientes</button>
-            </div>
+        <!-- CLIENTES -->
 
-            <div class="card">
-                <h3>Veículos</h3>
-                <p>Em breve você poderá cadastrar veículos.</p>
-                <button disabled>Em breve</button>
-            </div>
+        <section id="telaClientes" style="display: none;">
 
-            <div class="card">
-                <h3>Ordens de Serviço</h3>
-                <p>Controle os serviços realizados.</p>
-                <button disabled>Em breve</button>
+            <div class="resultado">
+                
+                <div class="cabecalho-secao">
+
+    <div>
+        <h2>Clientes</h2>
+
+        <p>
+            Clientes cadastrados na oficina.
+        </p>
+    </div>
+
+    <div>
+        <button onclick="mostrarFormularioCliente()">
+            + Novo cliente
+        </button>
+
+        <button onclick="listarClientes()">
+            Atualizar lista
+        </button>
+    </div>
+
+</div>
+
+<div id="formularioCliente" style="display: none;">
+
+    <h3 id="tituloFormularioCliente">Novo Cliente</h3>
+
+    <form onsubmit="salvarCliente(event)">
+
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" required>
+
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf">
+
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone">
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email">
+
+        <button type="submit">
+            Salvar cliente
+        </button>
+
+        <button type="button" onclick="fecharFormularioCliente()">
+            Cancelar
+        </button>
+
+    </form>
+
+</div>
+
+                <div id="listaClientes">
+
+                    Clique em "Atualizar lista"
+                    para consultar os clientes.
+
+                </div>
+
             </div>
 
         </section>
 
-        <section class="resultado">
-
-            <h2>Clientes cadastrados</h2>
-
-            <button onclick="listarClientes()">Atualizar lista</button>
-
-            <div id="listaClientes">
-                Clique em “Listar clientes” para consultar os clientes.
-            </div>
-
-        </section>
 
     </main>
+
 
     <script src="script.js"></script>
 
