@@ -31,8 +31,8 @@
                     Clientes
                 </button>
 
-                <button disabled>
-                    Veículos
+                <button onclick="mostrarVeiculos()">
+                      Veículos
                 </button>
 
                 <button disabled>
@@ -92,8 +92,8 @@
                         aos seus clientes.
                     </p>
 
-                    <button disabled>
-                        Em breve
+                    <button onclick="mostrarVeiculos()">
+                        Acessar veículos
                     </button>
 
                 </div>
@@ -187,7 +187,82 @@
             </div>
 
         </section>
+<!-- VEÍCULOS -->
 
+<section id="telaVeiculos" style="display: none;">
+
+    <div class="resultado">
+
+        <div class="cabecalho-secao">
+
+            <div>
+                <h2>Veículos</h2>
+
+                <p>
+                    Veículos cadastrados na oficina.
+                </p>
+            </div>
+
+            <div>
+                <button onclick="mostrarFormularioVeiculo()">
+                    + Novo veículo
+                </button>
+
+                <button onclick="listarVeiculos()">
+                    Atualizar lista
+                </button>
+            </div>
+
+        </div>
+
+        <div id="formularioVeiculo" style="display: none;">
+
+    <h3>Novo Veículo</h3>
+
+    <form onsubmit="salvarVeiculo(event)">
+
+        <label for="marca">Marca</label>
+        <input type="text" id="marca" required>
+
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" required>
+
+        <label for="ano">Ano</label>
+        <input type="number" id="ano" required>
+
+        <label for="placa">Placa</label>
+        <input type="text" id="placa" required>
+
+        <label for="quilometragem">Quilometragem</label>
+        <input type="number" id="quilometragem" required>
+
+        <label for="clienteVeiculo">Cliente</label>
+        <select id="clienteVeiculo" required>
+            <option value="">Selecione o cliente</option>
+        </select>
+
+        <button type="submit">
+            Salvar veículo
+        </button>
+
+        <button type="button" onclick="fecharFormularioVeiculo()">
+            Cancelar
+        </button>
+
+    </form>
+
+</div>
+
+        <div id="listaVeiculos">
+
+            Clique em "Atualizar lista"
+            para consultar os veículos.
+
+        </div>
+
+    </div>
+
+</section>
 
     </main>
 
