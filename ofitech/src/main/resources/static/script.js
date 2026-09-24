@@ -17,8 +17,8 @@ async function listarClientes() {
         clientes.sort((a, b) =>
          a.nome.localeCompare(b.nome, "pt-BR", {
         sensitivity: "base"
-            })
-        );
+    })
+    );
         
         if (clientes.length === 0) {
             lista.innerHTML = "<p>Nenhum cliente cadastrado.</p>";
@@ -89,6 +89,133 @@ function mostrarClientes() {
 
 }
 
+function mostrarOficina() {
+
+    document.getElementById("telaInicio").style.display = "none";
+    document.getElementById("telaClientes").style.display = "none";
+    document.getElementById("telaVeiculos").style.display = "none";
+    document.getElementById("telaOrdensServico").style.display = "none";
+    document.getElementById("telaOficina").style.display = "block";
+    carregarOficina();
+}
+
+async function carregarOficina() {
+
+    try {
+
+        const resposta = await fetch("/oficina");
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar os dados da oficina.");
+        }
+
+        const oficinas = await resposta.json();
+
+        if (oficinas.length === 0) {
+            return;
+        }
+
+        const oficina = oficinas[0];
+
+        if (oficina.id && oficina.logo) {
+    const previewLogo = document.getElementById("previewLogoOficina");
+
+    previewLogo.src = `/oficina/${oficina.id}/logo`;
+    previewLogo.style.display = "block";
+}
+        document.getElementById("nomeEmpresa").value = oficina.nomeEmpresa || "";
+        document.getElementById("nomeFantasia").value = oficina.nomeFantasia || "";
+        document.getElementById("cnpj").value = oficina.cnpj || "";
+        document.getElementById("telefoneOficina").value = oficina.telefone || "";
+        document.getElementById("emailOficina").value = oficina.email || "";
+        document.getElementById("enderecoOficina").value = oficina.endereco || "";
+        document.getElementById("cidadeOficina").value = oficina.cidade || "";
+        document.getElementById("estadoOficina").value = oficina.estado || "";
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível carregar os dados da oficina.");
+
+    }
+}
+
+async function salvarOficina(event) {
+    event.preventDefault();
+
+    const oficina = {
+        nomeEmpresa: document.getElementById("nomeEmpresa").value,
+        nomeFantasia: document.getElementById("nomeFantasia").value,
+        cnpj: document.getElementById("cnpj").value,
+        telefone: document.getElementById("telefoneOficina").value,
+        email: document.getElementById("emailOficina").value,
+        endereco: document.getElementById("enderecoOficina").value,
+        cidade: document.getElementById("cidadeOficina").value,
+        estado: document.getElementById("estadoOficina").value
+    };
+
+    const arquivoLogo = document.getElementById("logoOficina").files[0];
+
+    const dados = new FormData();
+
+    dados.append(
+        "oficina",
+        new Blob(
+            [JSON.stringify(oficina)],
+            { type: "application/json" }
+        )
+    );
+
+    if (arquivoLogo) {
+        dados.append("logo", arquivoLogo);
+    }
+
+    try {
+        const respostaOficinas = await fetch("/oficina");
+
+        if (!respostaOficinas.ok) {
+            throw new Error("Erro ao buscar a oficina existente.");
+        }
+
+        const oficinas = await respostaOficinas.json();
+
+        let resposta;
+
+        if (oficinas.length > 0) {
+
+            const oficinaExistente = oficinas[0];
+
+            resposta = await fetch(`/oficina/${oficinaExistente.id}`, {
+                method: "PUT",
+                body: dados
+            });
+
+        } else {
+
+            resposta = await fetch("/oficina", {
+                method: "POST",
+                body: dados
+            });
+        }
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao salvar oficina.");
+        }
+
+        const oficinaSalva = await resposta.json();
+
+        alert("Dados da oficina salvos com sucesso!");
+
+        console.log("Oficina salva:", oficinaSalva);
+
+        await carregarOficina();
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Não foi possível salvar os dados da oficina.");
+    }
+}
 
 function mostrarFormularioCliente() {
 
@@ -1474,3 +1601,17 @@ function cancelarEdicaoItem(itemId) {
     formulario.innerHTML = "";
     formulario.style.display = "none";
 }
+
+document.getElementById("logoOficina").addEventListener("change", function () {
+
+    const arquivo = this.files[0];
+
+    if (!arquivo) {
+        return;
+    }
+
+    const previewLogo = document.getElementById("previewLogoOficina");
+
+    previewLogo.src = URL.createObjectURL(arquivo);
+    previewLogo.style.display = "block";
+});

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class Oficina {
@@ -20,6 +21,8 @@ public class Oficina {
     private String endereco;
     private String cidade;
     private String estado;
+    @Lob
+    private byte[] logo;
 
     public Oficina() {
     }
@@ -103,5 +106,13 @@ public class Oficina {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+    
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+    this.logo = logo;
     }
 }
