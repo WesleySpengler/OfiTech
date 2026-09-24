@@ -14,6 +14,12 @@ async function listarClientes() {
 
         const clientes = await resposta.json();
 
+        clientes.sort((a, b) =>
+         a.nome.localeCompare(b.nome, "pt-BR", {
+        sensitivity: "base"
+            })
+        );
+        
         if (clientes.length === 0) {
             lista.innerHTML = "<p>Nenhum cliente cadastrado.</p>";
             return;
@@ -560,6 +566,7 @@ async function mostrarFormularioOrdemServico() {
     await carregarClientesParaOrdemServico();
 
 }
+
 async function carregarClientesParaOrdemServico() {
 
     const select = document.getElementById("clienteOrdemServico");
@@ -573,6 +580,12 @@ async function carregarClientesParaOrdemServico() {
         }
 
         const clientes = await resposta.json();
+
+        clientes.sort((a, b) =>
+            a.nome.localeCompare(b.nome, "pt-BR", {
+                sensitivity: "base"
+            })
+        );
 
         select.innerHTML = `
             <option value="">
@@ -604,6 +617,7 @@ async function carregarClientesParaOrdemServico() {
     }
 
 }
+
 async function carregarVeiculosParaOrdemServico(clienteId) {
 
     const select = document.getElementById("veiculoOrdemServico");
@@ -877,6 +891,8 @@ async function listarOrdensServico() {
 
         const ordens = await resposta.json();
 
+        ordens.reverse();
+
         if (ordens.length === 0) {
             lista.innerHTML = "Nenhuma ordem de serviço cadastrada.";
             return;
@@ -931,6 +947,12 @@ async function listarOrdensServico() {
     <button onclick="mostrarFormularioItem(${ordem.id})">
         + Adicionar item
     </button>
+   
+    <button onclick="editarOrdemServico(${ordem.id})">
+         Editar OS
+    </button>
+
+    <div id="editarOrdem-${ordem.id}" style="display: none;"></div>
 
     <div id="formularioItem-${ordem.id}" style="display: none;">
 
@@ -1012,6 +1034,109 @@ async function listarOrdensServico() {
             "Erro ao carregar as ordens de serviço.";
     }
 }
+
+
+async function editarOrdemServico(ordemId) {
+    try {
+        const resposta = await fetch(`/ordens-servico/${ordemId}`);
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar ordem de serviço.");
+        }
+
+        const ordem = await resposta.json();
+
+        const formulario = document.getElementById(`editarOrdem-${ordemId}`);
+
+        formulario.innerHTML = `
+            <div>
+                <label>Problema relatado:</label>
+                <input 
+                    type="text"
+                    id="problemaEditar-${ordemId}"
+                    value="${ordem.problemaRelatado || ""}"
+                >
+
+                <label>Diagnóstico:</label>
+                <input 
+                    type="text"
+                    id="diagnosticoEditar-${ordemId}"
+                    value="${ordem.diagnostico || ""}"
+                >
+
+                <label>Observações:</label>
+                <textarea id="observacoesEditar-${ordemId}">${ordem.observacoes || ""}</textarea>
+
+                <label>Status:</label>
+                <select id="statusEditar-${ordemId}">
+                    <option value="ABERTA" ${ordem.status === "ABERTA" ? "selected" : ""}>Aberta</option>
+                    <option value="EM_ANDAMENTO" ${ordem.status === "EM_ANDAMENTO" ? "selected" : ""}>Em andamento</option>
+                    <option value="AGUARDANDO_PECAS" ${ordem.status === "AGUARDANDO_PECAS" ? "selected" : ""}>Aguardando peças</option>
+                    <option value="CONCLUIDA" ${ordem.status === "CONCLUIDA" ? "selected" : ""}>Concluída</option>
+                    <option value="CANCELADA" ${ordem.status === "CANCELADA" ? "selected" : ""}>Cancelada</option>
+                </select>
+
+                <button onclick="salvarEdicaoOrdemServico(${ordemId})">
+                    Salvar alteração
+                </button>
+
+                <button onclick="cancelarEdicaoOrdemServico(${ordemId})">
+                    Cancelar
+                </button>
+            </div>
+        `;
+
+        formulario.style.display = "block";
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Não foi possível carregar a ordem de serviço para edição.");
+    }
+}
+
+async function salvarEdicaoOrdemServico(ordemId) {
+    const problemaRelatado = document.getElementById(`problemaEditar-${ordemId}`).value;
+    const diagnostico = document.getElementById(`diagnosticoEditar-${ordemId}`).value;
+    const observacoes = document.getElementById(`observacoesEditar-${ordemId}`).value;
+    const status = document.getElementById(`statusEditar-${ordemId}`).value;
+
+    const ordemAtualizada = {
+        problemaRelatado: problemaRelatado,
+        diagnostico: diagnostico,
+        observacoes: observacoes,
+        status: status
+    };
+
+    try {
+        const resposta = await fetch(`/ordens-servico/${ordemId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(ordemAtualizada)
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao atualizar ordem de serviço.");
+        }
+
+        alert("Ordem de serviço atualizada com sucesso!");
+
+        await listarOrdensServico();
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Não foi possível atualizar a ordem de serviço.");
+    }
+}
+
+function cancelarEdicaoOrdemServico(ordemId) {
+    const formulario = document.getElementById(`editarOrdem-${ordemId}`);
+
+    formulario.innerHTML = "";
+    formulario.style.display = "none";
+}
+
 async function salvarItemOrdemServico(ordemId) {
 
     const tipo = document.getElementById(
