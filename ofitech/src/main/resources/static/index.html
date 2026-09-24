@@ -34,10 +34,10 @@
                 <button onclick="mostrarVeiculos()">
                       Veículos
                 </button>
-
-                <button disabled>
+                <button onclick="mostrarOrdensServico()">
                     Ordens de Serviço
                 </button>
+               
 
             </nav>
 
@@ -107,10 +107,9 @@
                         Controle serviços, peças,
                         valores e status.
                     </p>
-
-                    <button disabled>
-                        Em breve
-                    </button>
+<button onclick="mostrarOrdensServico()">
+    Ordens de Serviço
+</button>
 
                 </div>
 
@@ -257,6 +256,186 @@
 
             Clique em "Atualizar lista"
             para consultar os veículos.
+
+        </div>
+
+    </div>
+
+</section>
+<section id="telaOrdensServico" style="display: none;">
+
+    <div class="resultado">
+
+        <div class="cabecalho-secao">
+
+            <div>
+                <h2>Ordens de Serviço</h2>
+                <p>Gerencie as ordens de serviço da oficina.</p>
+            </div>
+
+            <div>
+                <button onclick="mostrarFormularioOrdemServico()">
+                    + Nova ordem de serviço
+                </button>
+
+                <button onclick="listarOrdensServico()">
+                    Atualizar lista
+                </button>
+            </div>
+
+        </div>
+
+        <div id="formularioOrdemServico" style="display: none;">
+
+            <h3>Nova Ordem de Serviço</h3>
+
+            <form onsubmit="salvarOrdemServico(event)">
+
+                <label for="clienteOrdemServico">
+                    Cliente
+                </label>
+
+                <select id="clienteOrdemServico" required>
+                    <option value="">
+                        Selecione o cliente
+                    </option>
+                </select>
+
+                <label for="veiculoOrdemServico">
+                    Veículo
+                </label>
+
+                <select id="veiculoOrdemServico" required>
+                    <option value="">
+                        Selecione o veículo
+                    </option>
+                </select>
+
+                <button
+                    type="button"
+                    onclick="mostrarCadastroVeiculoNaOS()"
+                >
+                    + Cadastrar novo veículo
+                </button>
+
+                <div id="cadastroVeiculoNaOS" style="display: none;">
+
+                    <h4>Novo veículo</h4>
+
+                    <label for="marcaVeiculoOS">
+                        Marca
+                    </label>
+                    <input type="text" id="marcaVeiculoOS">
+
+                    <label for="modeloVeiculoOS">
+                        Modelo
+                    </label>
+                    <input type="text" id="modeloVeiculoOS">
+
+                    <label for="anoVeiculoOS">
+                        Ano
+                    </label>
+                    <input type="number" id="anoVeiculoOS">
+
+                    <label for="placaVeiculoOS">
+                        Placa
+                    </label>
+                    <input type="text" id="placaVeiculoOS">
+
+                    <label for="quilometragemVeiculoOS">
+                        Quilometragem
+                    </label>
+                    <input type="number" id="quilometragemVeiculoOS">
+
+                    <button
+                        type="button"
+                        onclick="salvarVeiculoNaOS()"
+                    >
+                        Salvar veículo
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="fecharCadastroVeiculoNaOS()"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+
+                <label for="problemaRelatado">
+                    Problema relatado
+                </label>
+
+                <textarea
+                    id="problemaRelatado"
+                    required
+                ></textarea>
+
+
+                <label for="diagnostico">
+                    Diagnóstico
+                </label>
+
+                <textarea
+                    id="diagnostico"
+                ></textarea>
+
+
+                <label for="observacoes">
+                    Observações
+                </label>
+
+                <textarea
+                    id="observacoes"
+                ></textarea>
+
+
+                <label for="statusOrdemServico">
+                    Status
+                </label>
+
+                <select id="statusOrdemServico" required>
+
+                    <option value="ABERTA">
+                        Aberta
+                    </option>
+
+                    <option value="EM_ANDAMENTO">
+                        Em andamento
+                    </option>
+
+                    <option value="FINALIZADA">
+                        Finalizada
+                    </option>
+
+                    <option value="ENTREGUE">
+                        Entregue
+                    </option>
+
+                </select>
+
+
+                <button type="submit">
+                    Salvar ordem de serviço
+                </button>
+
+                <button
+                    type="button"
+                    onclick="fecharFormularioOrdemServico()"
+                >
+                    Cancelar
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div id="listaOrdensServico">
+
+            Clique em "Atualizar lista" para consultar as ordens de serviço.
 
         </div>
 

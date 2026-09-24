@@ -66,6 +66,8 @@ function mostrarInicio() {
 
     document.getElementById("telaInicio").style.display = "block";
     document.getElementById("telaClientes").style.display = "none";
+    document.getElementById("telaVeiculos").style.display = "none";
+    document.getElementById("telaOrdensServico").style.display = "none";
 
 }
 
@@ -74,6 +76,8 @@ function mostrarClientes() {
 
     document.getElementById("telaInicio").style.display = "none";
     document.getElementById("telaClientes").style.display = "block";
+    document.getElementById("telaVeiculos").style.display = "none";
+    document.getElementById("telaOrdensServico").style.display = "none";
 
     listarClientes();
 
@@ -250,8 +254,17 @@ function mostrarVeiculos() {
     document.getElementById("telaInicio").style.display = "none";
     document.getElementById("telaClientes").style.display = "none";
     document.getElementById("telaVeiculos").style.display = "block";
-   
+    document.getElementById("telaOrdensServico").style.display = "none";
+
     listarVeiculos();
+
+}
+function mostrarOrdensServico() {
+
+    document.getElementById("telaInicio").style.display = "none";
+    document.getElementById("telaClientes").style.display = "none";
+    document.getElementById("telaVeiculos").style.display = "none";
+    document.getElementById("telaOrdensServico").style.display = "block";
 
 }
 async function listarVeiculos() {
@@ -529,4 +542,810 @@ async function editarVeiculo(id) {
 
     }
 
+}
+function mostrarOrdensServico() {
+
+    document.getElementById("telaInicio").style.display = "none";
+    document.getElementById("telaClientes").style.display = "none";
+    document.getElementById("telaVeiculos").style.display = "none";
+    document.getElementById("telaOrdensServico").style.display = "block";
+
+}
+async function mostrarFormularioOrdemServico() {
+
+    const formulario = document.getElementById("formularioOrdemServico");
+
+    formulario.style.display = "block";
+
+    await carregarClientesParaOrdemServico();
+
+}
+async function carregarClientesParaOrdemServico() {
+
+    const select = document.getElementById("clienteOrdemServico");
+
+    try {
+
+        const resposta = await fetch("/clientes");
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar clientes.");
+        }
+
+        const clientes = await resposta.json();
+
+        select.innerHTML = `
+            <option value="">
+                Selecione o cliente
+            </option>
+        `;
+
+        clientes.forEach(cliente => {
+
+            const option = document.createElement("option");
+
+            option.value = cliente.id;
+            option.textContent = cliente.nome;
+
+            select.appendChild(option);
+
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        select.innerHTML = `
+            <option value="">
+                Erro ao carregar clientes
+            </option>
+        `;
+
+    }
+
+}
+async function carregarVeiculosParaOrdemServico(clienteId) {
+
+    const select = document.getElementById("veiculoOrdemServico");
+
+    select.innerHTML = `
+        <option value="">
+            Carregando veículos...
+        </option>
+    `;
+
+    try {
+
+        const resposta = await fetch(`/veiculos/cliente/${clienteId}`);
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar veículos.");
+        }
+
+        const veiculos = await resposta.json();
+
+        select.innerHTML = `
+            <option value="">
+                Selecione o veículo
+            </option>
+        `;
+
+        if (veiculos.length === 0) {
+
+            select.innerHTML = `
+                <option value="">
+                    Nenhum veículo cadastrado para este cliente
+                </option>
+            `;
+
+            return;
+        }
+
+        veiculos.forEach(veiculo => {
+
+            const option = document.createElement("option");
+
+            option.value = veiculo.id;
+
+            option.textContent =
+                `${veiculo.marca} ${veiculo.modelo} - ${veiculo.placa}`;
+
+            select.appendChild(option);
+
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        select.innerHTML = `
+            <option value="">
+                Erro ao carregar veículos
+            </option>
+        `;
+
+    }
+
+}
+document.getElementById("clienteOrdemServico")
+    .addEventListener("change", function () {
+
+        const clienteId = this.value;
+
+        const selectVeiculo =
+            document.getElementById("veiculoOrdemServico");
+
+        if (!clienteId) {
+
+            selectVeiculo.innerHTML = `
+                <option value="">
+                    Selecione primeiro o cliente
+                </option>
+            `;
+
+            return;
+        }
+
+        carregarVeiculosParaOrdemServico(clienteId);
+
+    });
+function mostrarCadastroVeiculoNaOS() {
+    document.getElementById("cadastroVeiculoNaOS").style.display = "block";
+}
+
+function fecharCadastroVeiculoNaOS() {
+    document.getElementById("cadastroVeiculoNaOS").style.display = "none";
+}
+async function salvarVeiculoNaOS() {
+
+    const clienteId = Number(
+        document.getElementById("clienteOrdemServico").value
+    );
+
+    if (!clienteId) {
+        alert("Selecione um cliente antes de cadastrar o veículo.");
+        return;
+    }
+
+    const veiculo = {
+        marca: document.getElementById("marcaVeiculoOS").value,
+        modelo: document.getElementById("modeloVeiculoOS").value,
+        ano: Number(document.getElementById("anoVeiculoOS").value),
+        placa: document.getElementById("placaVeiculoOS").value,
+        quilometragem: Number(
+            document.getElementById("quilometragemVeiculoOS").value
+        ),
+        cliente: {
+            id: clienteId
+        }
+    };
+
+    try {
+
+        const resposta = await fetch("/veiculos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(veiculo)
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao cadastrar veículo.");
+        }
+
+        const novoVeiculo = await resposta.json();
+
+        alert("Veículo cadastrado com sucesso!");
+
+        await carregarVeiculosParaOrdemServico(clienteId);
+
+        document.getElementById("veiculoOrdemServico").value =
+            novoVeiculo.id;
+
+        fecharCadastroVeiculoNaOS();
+
+        document.getElementById("marcaVeiculoOS").value = "";
+        document.getElementById("modeloVeiculoOS").value = "";
+        document.getElementById("anoVeiculoOS").value = "";
+        document.getElementById("placaVeiculoOS").value = "";
+        document.getElementById("quilometragemVeiculoOS").value = "";
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível cadastrar o veículo.");
+    }
+}
+async function salvarOrdemServico(event) {
+
+    event.preventDefault();
+
+    const clienteId = Number(
+        document.getElementById("clienteOrdemServico").value
+    );
+
+    const veiculoId = Number(
+        document.getElementById("veiculoOrdemServico").value
+    );
+
+    if (!clienteId) {
+        alert("Selecione um cliente.");
+        return;
+    }
+
+    if (!veiculoId) {
+        alert("Selecione um veículo.");
+        return;
+    }
+
+    const ordemServico = {
+
+        dataEntrada: new Date().toISOString().slice(0, 19),
+
+        problemaRelatado:
+            document.getElementById("problemaRelatado").value,
+
+        diagnostico:
+            document.getElementById("diagnostico").value,
+
+        observacoes:
+            document.getElementById("observacoes").value,
+
+        status:
+            document.getElementById("statusOrdemServico").value,
+
+        cliente: {
+            id: clienteId
+        },
+
+        veiculo: {
+            id: veiculoId
+        },
+
+        oficina: {
+            id: 1
+        }
+    };
+
+    try {
+
+        const resposta = await fetch("/ordens-servico", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(ordemServico)
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao salvar ordem de serviço.");
+        }
+
+        const novaOrdem = await resposta.json();
+
+        alert(
+            "Ordem de serviço #" +
+            novaOrdem.id +
+            " criada com sucesso!"
+        );
+
+        fecharFormularioOrdemServico();
+
+        listarOrdensServico();
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível salvar a ordem de serviço.");
+    }
+}
+function fecharFormularioOrdemServico() {
+
+    document.getElementById("formularioOrdemServico").style.display = "none";
+
+    document.getElementById("formularioOrdemServico")
+        .querySelector("form")
+        .reset();
+
+    document.getElementById("cadastroVeiculoNaOS").style.display = "none";
+
+    document.getElementById("veiculoOrdemServico").innerHTML = `
+        <option value="">
+            Selecione o veículo
+        </option>
+    `;
+}
+async function listarOrdensServico() {
+
+    const lista = document.getElementById("listaOrdensServico");
+
+    lista.innerHTML = "Carregando ordens de serviço...";
+
+    try {
+
+        const resposta = await fetch("/ordens-servico");
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar ordens de serviço.");
+        }
+
+        const ordens = await resposta.json();
+
+        if (ordens.length === 0) {
+            lista.innerHTML = "Nenhuma ordem de serviço cadastrada.";
+            return;
+        }
+
+        lista.innerHTML = "";
+
+        ordens.forEach(ordem => {
+
+            const item = document.createElement("div");
+
+            item.className = "resultado";
+
+            item.innerHTML = `
+    <h3>Ordem de Serviço #${ordem.id}</h3>
+
+    <p>
+        <strong>Cliente:</strong>
+        ${ordem.cliente ? ordem.cliente.nome : "Não informado"}
+    </p>
+
+    <p>
+        <strong>Veículo:</strong>
+        ${ordem.veiculo
+                    ? ordem.veiculo.marca + " " +
+                    ordem.veiculo.modelo + " - " +
+                    ordem.veiculo.placa
+                    : "Não informado"
+                }
+    </p>
+
+    <p>
+        <strong>Problema:</strong>
+        ${ordem.problemaRelatado || "Não informado"}
+    </p>
+
+    <p>
+        <strong>Diagnóstico:</strong>
+        ${ordem.diagnostico || "Não informado"}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        ${ordem.status || "Não informado"}
+    </p>
+
+    <p>
+        <strong>Observações:</strong>
+        ${ordem.observacoes || "Nenhuma"}
+    </p>
+
+    <button onclick="mostrarFormularioItem(${ordem.id})">
+        + Adicionar item
+    </button>
+
+    <div id="formularioItem-${ordem.id}" style="display: none;">
+
+        <h4>Adicionar item</h4>
+
+        <label for="tipoItem-${ordem.id}">
+            Tipo
+        </label>
+
+        <select id="tipoItem-${ordem.id}">
+            <option value="SERVICO">Serviço</option>
+            <option value="PECA">Peça</option>
+        </select>
+
+        <label for="descricaoItem-${ordem.id}">
+            Descrição
+        </label>
+
+        <input
+            type="text"
+            id="descricaoItem-${ordem.id}"
+            placeholder="Ex.: Troca de óleo"
+        >
+
+        <label for="quantidadeItem-${ordem.id}">
+            Quantidade
+        </label>
+
+        <input
+            type="number"
+            id="quantidadeItem-${ordem.id}"
+            value="1"
+            min="1"
+        >
+
+        <label for="valorItem-${ordem.id}">
+            Valor unitário
+        </label>
+
+        <input
+            type="number"
+            id="valorItem-${ordem.id}"
+            step="0.01"
+            min="0"
+            placeholder="0,00"
+        >
+
+        <button
+            onclick="salvarItemOrdemServico(${ordem.id})"
+        >
+            Salvar item
+        </button>
+
+        <button
+            onclick="fecharFormularioItem(${ordem.id})"
+        >
+            Cancelar
+        </button>
+
+    </div>
+
+        <div id="itensOrdem-${ordem.id}">
+        Carregando itens...
+        </div>
+
+    <hr>
+`;
+
+            lista.appendChild(item);
+            carregarItensOrdemServico(ordem.id);
+
+        });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        lista.innerHTML =
+            "Erro ao carregar as ordens de serviço.";
+    }
+}
+async function salvarItemOrdemServico(ordemId) {
+
+    const tipo = document.getElementById(
+        `tipoItem-${ordemId}`
+    ).value;
+
+    const descricao = document.getElementById(
+        `descricaoItem-${ordemId}`
+    ).value;
+
+    const quantidade = Number(
+        document.getElementById(
+            `quantidadeItem-${ordemId}`
+        ).value
+    );
+
+    const valorUnitario = Number(
+        document.getElementById(
+            `valorItem-${ordemId}`
+        ).value
+    );
+
+    if (!descricao) {
+        alert("Informe a descrição do item.");
+        return;
+    }
+
+    if (!quantidade || quantidade <= 0) {
+        alert("Informe uma quantidade válida.");
+        return;
+    }
+
+    if (valorUnitario < 0 || isNaN(valorUnitario)) {
+        alert("Informe um valor válido.");
+        return;
+    }
+
+    const item = {
+
+        tipo: tipo,
+
+        descricao: descricao,
+
+        quantidade: quantidade,
+
+        valorUnitario: valorUnitario,
+
+        ordemServico: {
+            id: ordemId
+        }
+    };
+
+    try {
+
+        const resposta = await fetch(
+            `/itens-ordem-servico`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(item)
+            }
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao salvar item.");
+        }
+
+        alert("Item adicionado com sucesso!");
+
+        fecharFormularioItem(ordemId);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível adicionar o item.");
+    }
+}
+function fecharFormularioItem(ordemId) {
+
+    document.getElementById(
+        `formularioItem-${ordemId}`
+    ).style.display = "none";
+}
+function mostrarFormularioItem(ordemId) {
+
+    document.getElementById(
+        `formularioItem-${ordemId}`
+    ).style.display = "block";
+}
+async function carregarItensOrdemServico(ordemId) {
+
+    const listaItens = document.getElementById(
+        `itensOrdem-${ordemId}`
+    );
+
+    try {
+
+        const resposta = await fetch(
+            `/itens-ordem-servico/ordem/${ordemId}`
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar itens.");
+        }
+
+        const itens = await resposta.json();
+
+        if (itens.length === 0) {
+            listaItens.innerHTML =
+                "<p>Nenhum item adicionado.</p>";
+            return;
+        }
+
+        listaItens.innerHTML = `
+            <h4>Itens da Ordem de Serviço</h4>
+        `;
+
+        itens.forEach(item => {
+
+            const subtotal =
+                item.quantidade * item.valorUnitario;
+
+            listaItens.innerHTML += `
+    <div>
+        <p>
+            <strong>${item.tipo}:</strong>
+            ${item.descricao}
+            | Qtd: ${item.quantidade}
+            | R$ ${subtotal.toFixed(2)}
+        </p>
+
+        <button onclick="editarItemOrdemServico(${item.id}, ${ordemId})">
+            Editar
+        </button>
+
+        <button onclick="excluirItemOrdemServico(${item.id}, ${ordemId})">
+            Excluir
+        </button>
+
+        <div id="editarItem-${item.id}" style="display: none;"></div>
+    </div>
+`;
+        });
+
+        const respostaTotal =
+            await fetch(`/ordens-servico/${ordemId}/total`);
+
+        if (!respostaTotal.ok) {
+            throw new Error("Erro ao buscar total da ordem.");
+        }
+
+        const total = await respostaTotal.json();
+
+        listaItens.innerHTML += `
+            <hr>
+            <p>
+                <strong>TOTAL DA ORDEM:</strong>
+                R$ ${Number(total).toFixed(2)}
+            </p>
+        `;
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        listaItens.innerHTML =
+            "<p>Erro ao carregar os itens.</p>";
+    }
+}
+
+
+async function excluirItemOrdemServico(itemId, ordemId) {
+
+    const confirmar =
+        confirm("Deseja realmente excluir este item?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const resposta =
+            await fetch(`/itens-ordem-servico/${itemId}`, {
+                method: "DELETE"
+            });
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao excluir item.");
+        }
+
+        alert("Item excluído com sucesso!");
+
+        await carregarItensOrdemServico(ordemId);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Não foi possível excluir o item.");
+    }
+}
+
+async function editarItemOrdemServico(itemId, ordemId) {
+    try {
+        const resposta = await fetch(`/itens-ordem-servico/${itemId}`);
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar item.");
+        }
+
+        const item = await resposta.json();
+
+        const formulario = document.getElementById(`editarItem-${itemId}`);
+
+        formulario.innerHTML = `
+            <div>
+                <label>Tipo:</label>
+                <select id="tipoEditar-${itemId}">
+                    <option value="PECA" ${item.tipo === "PECA" ? "selected" : ""}>Peça</option>
+                    <option value="SERVICO" ${item.tipo === "SERVICO" ? "selected" : ""}>Serviço</option>
+                </select>
+
+                <label>Descrição:</label>
+                <input 
+                    type="text" 
+                    id="descricaoEditar-${itemId}" 
+                    value="${item.descricao}"
+                >
+
+                <label>Quantidade:</label>
+                <input 
+                    type="number" 
+                    id="quantidadeEditar-${itemId}" 
+                    value="${item.quantidade}"
+                    min="1"
+                >
+
+                <label>Valor unitário:</label>
+                <input 
+                    type="number" 
+                    id="valorEditar-${itemId}" 
+                    value="${item.valorUnitario}"
+                    min="0"
+                    step="0.01"
+                >
+
+                <button onclick="salvarEdicaoItem(${itemId}, ${ordemId})">
+                    Salvar alteração
+                </button>
+
+                <button onclick="cancelarEdicaoItem(${itemId})">
+                    Cancelar
+                </button>
+            </div>
+        `;
+
+        formulario.style.display = "block";
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Não foi possível carregar o item para edição.");
+    }
+}
+
+
+async function salvarEdicaoItem(itemId, ordemId) {
+    const tipo = document.getElementById(`tipoEditar-${itemId}`).value;
+    const descricao = document.getElementById(`descricaoEditar-${itemId}`).value;
+    const quantidade = Number(
+        document.getElementById(`quantidadeEditar-${itemId}`).value
+    );
+    const valorUnitario = Number(
+        document.getElementById(`valorEditar-${itemId}`).value
+    );
+
+    if (!descricao) {
+        alert("Informe a descrição do item.");
+        return;
+    }
+
+    if (!quantidade || quantidade <= 0) {
+        alert("Informe uma quantidade válida.");
+        return;
+    }
+
+    if (isNaN(valorUnitario) || valorUnitario < 0) {
+        alert("Informe um valor válido.");
+        return;
+    }
+
+    const itemAtualizado = {
+        tipo: tipo,
+        descricao: descricao,
+        quantidade: quantidade,
+        valorUnitario: valorUnitario,
+        ordemServico: {
+            id: ordemId
+        }
+    };
+
+    try {
+        const resposta = await fetch(
+            `/itens-ordem-servico/${itemId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(itemAtualizado)
+            }
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao atualizar item.");
+        }
+
+        alert("Item atualizado com sucesso!");
+
+        await carregarItensOrdemServico(ordemId);
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Não foi possível atualizar o item.");
+    }
+}
+function cancelarEdicaoItem(itemId) {
+    const formulario = document.getElementById(`editarItem-${itemId}`);
+
+    formulario.innerHTML = "";
+    formulario.style.display = "none";
 }
