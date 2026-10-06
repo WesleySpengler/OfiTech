@@ -398,6 +398,7 @@ function mostrarOrdensServico() {
     document.getElementById("telaClientes").style.display = "none";
     document.getElementById("telaVeiculos").style.display = "none";
     document.getElementById("telaOrdensServico").style.display = "block";
+    listarOrdensServico();
 
 }
 async function listarVeiculos() {
@@ -683,6 +684,9 @@ function mostrarOrdensServico() {
     document.getElementById("telaVeiculos").style.display = "none";
     document.getElementById("telaOrdensServico").style.display = "block";
 
+    setTimeout(() => {
+        listarOrdensServico();
+    }, 300);
 }
 async function mostrarFormularioOrdemServico() {
 
@@ -1079,6 +1083,10 @@ async function listarOrdensServico() {
          Editar OS
     </button>
 
+    <button onclick="exportarOrdemServicoPDF(${ordem.id})">
+    📄 Exportar PDF
+    </button>
+
     <div id="editarOrdem-${ordem.id}" style="display: none;"></div>
 
     <div id="formularioItem-${ordem.id}" style="display: none;">
@@ -1264,27 +1272,12 @@ function cancelarEdicaoOrdemServico(ordemId) {
     formulario.style.display = "none";
 }
 
+
 async function salvarItemOrdemServico(ordemId) {
-
-    const tipo = document.getElementById(
-        `tipoItem-${ordemId}`
-    ).value;
-
-    const descricao = document.getElementById(
-        `descricaoItem-${ordemId}`
-    ).value;
-
-    const quantidade = Number(
-        document.getElementById(
-            `quantidadeItem-${ordemId}`
-        ).value
-    );
-
-    const valorUnitario = Number(
-        document.getElementById(
-            `valorItem-${ordemId}`
-        ).value
-    );
+    const tipo = document.getElementById(`tipoItem-${ordemId}`).value;
+    const descricao = document.getElementById(`descricaoItem-${ordemId}`).value;
+    const quantidade = Number(document.getElementById(`quantidadeItem-${ordemId}`).value);
+    const valorUnitario = Number(document.getElementById(`valorItem-${ordemId}`).value);
 
     if (!descricao) {
         alert("Informe a descrição do item.");
@@ -1302,47 +1295,31 @@ async function salvarItemOrdemServico(ordemId) {
     }
 
     const item = {
-
         tipo: tipo,
-
         descricao: descricao,
-
         quantidade: quantidade,
-
         valorUnitario: valorUnitario,
-
-        ordemServico: {
-            id: ordemId
-        }
+        ordemServico: { id: ordemId }
     };
 
     try {
-
-        const resposta = await fetch(
-            `/itens-ordem-servico`,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(item)
-            }
-        );
+        const resposta = await fetch(`/itens-ordem-servico`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        });
 
         if (!resposta.ok) {
             throw new Error("Erro ao salvar item.");
         }
 
-        alert("Item adicionado com sucesso!");
-
         fecharFormularioItem(ordemId);
+        await carregarItensOrdemServico(ordemId);
 
     } catch (erro) {
-
         console.error(erro);
-
         alert("Não foi possível adicionar o item.");
     }
 }
@@ -1615,3 +1592,184 @@ document.getElementById("logoOficina").addEventListener("change", function () {
     previewLogo.src = URL.createObjectURL(arquivo);
     previewLogo.style.display = "block";
 });
+async function exportarOrdemServicoPDF(ordemId) {
+    try {
+        const resposta = await fetch(`/ordens-servico/${ordemId}`);
+
+        if (!resposta.ok) {
+            alert("Não foi possível carregar a ordem de serviço.");
+            return;
+        }
+
+        const ordem = await resposta.json();
+
+        const respostaItens = await fetch(`/itens-ordem-servico/ordem/${ordemId}`);
+
+        if (!respostaItens.ok) {
+            alert("Não foi possível carregar os itens da ordem.");
+            return;
+        }
+
+        const itens = await respostaItens.json();
+
+        const respostaTotal = await fetch(`/ordens-servico/${ordemId}/total`);
+
+        if (!respostaTotal.ok) {
+            alert("Não foi possível carregar o total da ordem.");
+            return;
+        }
+
+        const total = await respostaTotal.json();
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Logo da oficina
+try {
+    const respostaLogo = await fetch(`/oficina/${ordem.oficina?.id || 1}/logo`);
+
+    if (respostaLogo.ok) {
+        const blobLogo = await respostaLogo.blob();
+
+        const leitor = new FileReader();
+
+        const logoData = await new Promise((resolve, reject) => {
+            leitor.onloadend = () => resolve(leitor.result);
+            leitor.onerror = reject;
+            leitor.readAsDataURL(blobLogo);
+        });
+
+        doc.addImage(logoData, "JPEG", 165, 8, 30, 30);
+    }
+} catch (erroLogo) {
+    console.warn("Não foi possível carregar a logo:", erroLogo);
+}
+
+        // Título
+        doc.setFontSize(18);
+        doc.text("ORDEM DE SERVIÇO", 105, 20, { align: "center" });
+
+        doc.setFontSize(12);
+        doc.text(`OS #${ordem.id}`, 20, 32);
+
+        // Oficina
+        doc.setFontSize(14);
+        doc.text("OFICINA", 20, 45);
+
+        doc.setFontSize(11);
+        doc.text(`Empresa: ${ordem.oficina?.nomeEmpresa || "Não informado"}`, 20, 53);
+        doc.text(`Nome Fantasia: ${ordem.oficina?.nomeFantasia || "Não informado"}`, 20, 60);
+        doc.text(`CNPJ: ${ordem.oficina?.cnpj || "Não informado"}`, 20, 67);
+        doc.text(`Telefone: ${ordem.oficina?.telefone || "Não informado"}`, 20, 74);
+
+        // Cliente
+        doc.setFontSize(14);
+        doc.text("CLIENTE", 20, 88);
+
+        doc.setFontSize(11);
+        doc.text(`Nome: ${ordem.cliente?.nome || "Não informado"}`, 20, 96);
+        doc.text(`CPF: ${ordem.cliente?.cpf || "Não informado"}`, 20, 103);
+        doc.text(`Telefone: ${ordem.cliente?.telefone || "Não informado"}`, 20, 110);
+
+        // Veículo
+        doc.setFontSize(14);
+        doc.text("VEÍCULO", 20, 124);
+
+        doc.setFontSize(11);
+        doc.text(
+            `Veículo: ${ordem.veiculo ? `${ordem.veiculo.marca} ${ordem.veiculo.modelo}` : "Não informado"}`,
+            20,
+            132
+        );
+
+        doc.text(`Placa: ${ordem.veiculo?.placa || "Não informado"}`, 20, 139);
+        doc.text(`Ano: ${ordem.veiculo?.ano || "Não informado"}`, 20, 146);
+        doc.text(`Quilometragem: ${ordem.veiculo?.quilometragem || "Não informado"} km`, 20, 153);
+
+        // Serviço
+        doc.setFontSize(14);
+        doc.text("SERVIÇO", 20, 167);
+
+        doc.setFontSize(11);
+        doc.text(`Problema: ${ordem.problemaRelatado || "Não informado"}`, 20, 175);
+        doc.text(`Diagnóstico: ${ordem.diagnostico || "Não informado"}`, 20, 182);
+        doc.text(`Status: ${ordem.status || "Não informado"}`, 20, 189);
+
+        // Itens
+        doc.setFontSize(14);
+        doc.text("PEÇAS / SERVIÇOS", 20, 203);
+
+        let y = 212;
+
+        doc.setFontSize(10);
+
+        if (itens.length === 0) {
+            doc.text("Nenhum item cadastrado.", 20, y);
+            y += 10;
+        } else {
+            itens.forEach(item => {
+                const subtotal = Number(item.quantidade) * Number(item.valorUnitario);
+
+                doc.text(
+                    `${item.tipo} - ${item.descricao}`,
+                    20,
+                    y
+                );
+
+                doc.text(
+                    `Qtd: ${item.quantidade} | Unit.: R$ ${Number(item.valorUnitario).toFixed(2)} | Subtotal: R$ ${subtotal.toFixed(2)}`,
+                    20,
+                    y + 6
+                );
+
+                y += 14;
+
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+            });
+        }
+
+        // Total
+        doc.setFontSize(14);
+        doc.text(
+            `TOTAL: R$ ${Number(total).toFixed(2)}`,
+            20,
+            y + 8
+        );
+
+        // Observações
+        if (ordem.observacoes) {
+            doc.setFontSize(14);
+            doc.text("OBSERVAÇÕES", 20, y + 25);
+
+            doc.setFontSize(11);
+            doc.text(ordem.observacoes, 20, y + 33);
+        }
+
+        // Data
+        let dataFormatada = "Não informada";
+
+if (ordem.dataEntrada) {
+    const data = new Date(ordem.dataEntrada);
+
+    if (!isNaN(data.getTime())) {
+        dataFormatada = data.toLocaleDateString("pt-BR");
+    }
+}
+
+doc.setFontSize(10);
+doc.text(
+    `Data de entrada: ${dataFormatada}`,
+    20,
+    285
+);
+        // Gerar arquivo
+        doc.save(`Ordem-de-Servico-${ordem.id}.pdf`);
+
+    } catch (erro) {
+        console.error("Erro ao gerar PDF:", erro);
+        alert("Erro ao gerar o PDF.");
+    }
+}
