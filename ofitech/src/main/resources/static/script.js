@@ -1666,6 +1666,7 @@ document.getElementById("logoOficina").addEventListener("change", function () {
     previewLogo.src = URL.createObjectURL(arquivo);
     previewLogo.style.display = "block";
 });
+
 async function exportarOrdemServicoPDF(ordemId) {
     try {
         const resposta = await fetch(`/ordens-servico/${ordemId}`);
@@ -1698,105 +1699,322 @@ async function exportarOrdemServicoPDF(ordemId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Logo da oficina
-try {
-    const respostaLogo = await fetch(`/oficina/${ordem.oficina?.id || 1}/logo`);
+        // =========================
+        // DATA
+        // =========================
 
-    if (respostaLogo.ok) {
-        const blobLogo = await respostaLogo.blob();
+        let dataFormatada = "Não informada";
 
-        const leitor = new FileReader();
+        if (ordem.dataEntrada) {
+            const data = new Date(ordem.dataEntrada);
 
-        const logoData = await new Promise((resolve, reject) => {
-            leitor.onloadend = () => resolve(leitor.result);
-            leitor.onerror = reject;
-            leitor.readAsDataURL(blobLogo);
-        });
+            if (!isNaN(data.getTime())) {
+                dataFormatada = data.toLocaleDateString("pt-BR");
+            }
+        }
 
-        doc.addImage(logoData, "JPEG", 165, 8, 30, 30);
-    }
-} catch (erroLogo) {
-    console.warn("Não foi possível carregar a logo:", erroLogo);
-}
+        // =========================
+        // CABEÇALHO
+        // =========================
 
-        // Título
-        doc.setFontSize(18);
-        doc.text("ORDEM DE SERVIÇO", 105, 20, { align: "center" });
+        doc.setFillColor(55, 65, 81);
+        doc.rect(0, 0, 210, 38, "F");
 
-        doc.setFontSize(12);
-        doc.text(`OS #${ordem.id}`, 20, 32);
+        // Logo
+        try {
+            const respostaLogo = await fetch(
+                `/oficina/${ordem.oficina?.id || 1}/logo`
+            );
 
-        // Oficina
-        doc.setFontSize(14);
-        doc.text("OFICINA", 20, 45);
+            if (respostaLogo.ok) {
+                const blobLogo = await respostaLogo.blob();
 
-        doc.setFontSize(11);
-        doc.text(`Empresa: ${ordem.oficina?.nomeEmpresa || "Não informado"}`, 20, 53);
-        doc.text(`Nome Fantasia: ${ordem.oficina?.nomeFantasia || "Não informado"}`, 20, 60);
-        doc.text(`CNPJ: ${ordem.oficina?.cnpj || "Não informado"}`, 20, 67);
-        doc.text(`Telefone: ${ordem.oficina?.telefone || "Não informado"}`, 20, 74);
+                const leitor = new FileReader();
 
-        // Cliente
-        doc.setFontSize(14);
-        doc.text("CLIENTE", 20, 88);
+                const logoData = await new Promise((resolve, reject) => {
+                    leitor.onloadend = () => resolve(leitor.result);
+                    leitor.onerror = reject;
+                    leitor.readAsDataURL(blobLogo);
+                });
 
-        doc.setFontSize(11);
-        doc.text(`Nome: ${ordem.cliente?.nome || "Não informado"}`, 20, 96);
-        doc.text(`CPF: ${ordem.cliente?.cpf || "Não informado"}`, 20, 103);
-        doc.text(`Telefone: ${ordem.cliente?.telefone || "Não informado"}`, 20, 110);
+                doc.addImage(
+                    logoData,
+                    "JPEG",
+                    165,
+                    5,
+                    30,
+                    28
+                );
+            }
+        } catch (erroLogo) {
+            console.warn(
+                "Não foi possível carregar a logo:",
+                erroLogo
+            );
+        }
 
-        // Veículo
-        doc.setFontSize(14);
-        doc.text("VEÍCULO", 20, 124);
+        doc.setTextColor(255, 255, 255);
 
-        doc.setFontSize(11);
-        doc.text(
-            `Veículo: ${ordem.veiculo ? `${ordem.veiculo.marca} ${ordem.veiculo.modelo}` : "Não informado"}`,
-            20,
-            132
-        );
-
-        doc.text(`Placa: ${ordem.veiculo?.placa || "Não informado"}`, 20, 139);
-        doc.text(`Ano: ${ordem.veiculo?.ano || "Não informado"}`, 20, 146);
-        doc.text(`Quilometragem: ${ordem.veiculo?.quilometragem || "Não informado"} km`, 20, 153);
-
-        // Serviço
-        doc.setFontSize(14);
-        doc.text("SERVIÇO", 20, 167);
-
-        doc.setFontSize(11);
-        doc.text(`Problema: ${ordem.problemaRelatado || "Não informado"}`, 20, 175);
-        doc.text(`Diagnóstico: ${ordem.diagnostico || "Não informado"}`, 20, 182);
-        doc.text(`Status: ${ordem.status || "Não informado"}`, 20, 189);
-
-        // Itens
-        doc.setFontSize(14);
-        doc.text("PEÇAS / SERVIÇOS", 20, 203);
-
-        let y = 212;
+        doc.setFontSize(20);
+        doc.setFont(undefined, "bold");
+        doc.text("OFITECH", 20, 15);
 
         doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+        doc.text(
+            "Sistema de Gestão para Oficinas Mecânicas",
+            20,
+            23
+        );
+
+        doc.setFontSize(14);
+        doc.setFont(undefined, "bold");
+        doc.text(
+            `ORDEM DE SERVIÇO #${ordem.id}`,
+            20,
+            32
+        );
+
+        // =========================
+        // DATA
+        // =========================
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Data de entrada: ${dataFormatada}`,
+            190,
+            48,
+            { align: "right" }
+        );
+
+        // =========================
+        // OFICINA
+        // =========================
+
+        doc.setFillColor(240, 244, 248);
+        doc.roundedRect(15, 55, 180, 42, 3, 3, "F");
+
+       doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+        doc.text("OFICINA", 20, 64);
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Empresa: ${ordem.oficina?.nomeEmpresa || "Não informado"}`,
+            20,
+            72
+        );
+
+        doc.text(
+            `Nome Fantasia: ${ordem.oficina?.nomeFantasia || "Não informado"}`,
+            20,
+            79
+        );
+
+        doc.text(
+            `CNPJ: ${ordem.oficina?.cnpj || "Não informado"}`,
+            20,
+            86
+        );
+
+        doc.text(
+            `Telefone: ${ordem.oficina?.telefone || "Não informado"}`,
+            110,
+            86
+        );
+
+        // =========================
+        // CLIENTE
+        // =========================
+
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(15, 103, 87, 42, 3, 3, "F");
+
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+        doc.text("CLIENTE", 20, 112);
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Nome: ${ordem.cliente?.nome || "Não informado"}`,
+            20,
+            120
+        );
+
+        doc.text(
+            `CPF: ${ordem.cliente?.cpf || "Não informado"}`,
+            20,
+            127
+        );
+
+        doc.text(
+            `Telefone: ${ordem.cliente?.telefone || "Não informado"}`,
+            20,
+            134
+        );
+
+        // =========================
+        // VEÍCULO
+        // =========================
+
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(108, 103, 87, 42, 3, 3, "F");
+
+       doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+        doc.text("VEÍCULO", 113, 112);
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Veículo: ${ordem.veiculo
+                ? `${ordem.veiculo.marca} ${ordem.veiculo.modelo}`
+                : "Não informado"}`,
+            113,
+            120
+        );
+
+        doc.text(
+            `Placa: ${ordem.veiculo?.placa || "Não informado"}`,
+            113,
+            127
+        );
+
+        doc.text(
+            `Ano: ${ordem.veiculo?.ano || "Não informado"} | Km: ${ordem.veiculo?.quilometragem || "Não informado"}`,
+            113,
+            134
+        );
+
+        // =========================
+        // SERVIÇO
+        // =========================
+
+        doc.setFillColor(240, 244, 248);
+        doc.roundedRect(15, 151, 180, 42, 3, 3, "F");
+
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+        doc.text("SERVIÇO", 20, 160);
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Problema: ${ordem.problemaRelatado || "Não informado"}`,
+            20,
+            168
+        );
+
+        doc.text(
+            `Diagnóstico: ${ordem.diagnostico || "Não informado"}`,
+            20,
+            175
+        );
+
+        doc.text(
+            `Status: ${ordem.status || "Não informado"}`,
+            20,
+            182
+        );
+
+        // =========================
+        // ITENS
+        // =========================
+
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+        doc.text("PEÇAS / SERVIÇOS", 15, 207);
+
+        // Cabeçalho da tabela
+        doc.setFillColor(13, 71, 161);
+        doc.rect(15, 212, 180, 9, "F");
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont(undefined, "bold");
+
+        doc.text("Descrição", 20, 218);
+        doc.text("Qtd.", 125, 218);
+        doc.text("Unit.", 145, 218);
+        doc.text("Subtotal", 175, 218);
+
+        let y = 228;
+
+        doc.setFont(undefined, "normal");
+        doc.setTextColor(60, 60, 60);
 
         if (itens.length === 0) {
-            doc.text("Nenhum item cadastrado.", 20, y);
+
+            doc.text(
+                "Nenhum item cadastrado.",
+                20,
+                y
+            );
+
             y += 10;
+
         } else {
-            itens.forEach(item => {
-                const subtotal = Number(item.quantidade) * Number(item.valorUnitario);
+
+            itens.forEach((item, index) => {
+
+                const subtotal =
+                    Number(item.quantidade) *
+                    Number(item.valorUnitario);
+
+                if (index % 2 === 0) {
+                    doc.setFillColor(248, 250, 252);
+                    doc.rect(15, y - 5, 180, 9, "F");
+                }
+
+                doc.setFontSize(9);
+
+                let descricao =
+                    `${item.tipo} - ${item.descricao}`;
+
+                if (descricao.length > 55) {
+                    descricao =
+                        descricao.substring(0, 52) + "...";
+                }
+
+                doc.text(descricao, 20, y);
 
                 doc.text(
-                    `${item.tipo} - ${item.descricao}`,
-                    20,
+                    String(item.quantidade),
+                    127,
                     y
                 );
 
                 doc.text(
-                    `Qtd: ${item.quantidade} | Unit.: R$ ${Number(item.valorUnitario).toFixed(2)} | Subtotal: R$ ${subtotal.toFixed(2)}`,
-                    20,
-                    y + 6
+                    `R$ ${Number(item.valorUnitario).toFixed(2)}`,
+                    143,
+                    y
                 );
 
-                y += 14;
+                doc.text(
+                    `R$ ${subtotal.toFixed(2)}`,
+                    174,
+                    y
+                );
+
+                y += 9;
 
                 if (y > 270) {
                     doc.addPage();
@@ -1805,48 +2023,115 @@ try {
             });
         }
 
-        // Total
-        doc.setFontSize(14);
+        // =========================
+        // TOTAL
+        // =========================
+
+        y += 5;
+
+        doc.setFillColor(55, 65, 81);
+doc.roundedRect(125, y, 70, 14, 3, 3, "F");
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(12);
+        doc.setFont(undefined, "bold");
+
         doc.text(
             `TOTAL: R$ ${Number(total).toFixed(2)}`,
-            20,
-            y + 8
+            190,
+            y + 9,
+            { align: "right" }
         );
 
-        // Observações
-        if (ordem.observacoes) {
-            doc.setFontSize(14);
-            doc.text("OBSERVAÇÕES", 20, y + 25);
+        // =========================
+        // OBSERVAÇÕES
+        // =========================
 
-            doc.setFontSize(11);
-            doc.text(ordem.observacoes, 20, y + 33);
+        if (ordem.observacoes) {
+
+            y += 25;
+
+            if (y > 255) {
+                doc.addPage();
+                y = 25;
+            }
+
+          doc.setTextColor(55, 65, 81);
+            doc.setFontSize(13);
+            doc.setFont(undefined, "bold");
+
+            doc.text(
+                "OBSERVAÇÕES",
+                15,
+                y
+            );
+
+            y += 8;
+
+            doc.setTextColor(60, 60, 60);
+            doc.setFontSize(10);
+            doc.setFont(undefined, "normal");
+
+            const observacoes =
+                doc.splitTextToSize(
+                    ordem.observacoes,
+                    180
+                );
+
+            doc.text(
+                observacoes,
+                15,
+                y
+            );
         }
 
-        // Data
-        let dataFormatada = "Não informada";
+        // =========================
+        // RODAPÉ
+        // =========================
 
-if (ordem.dataEntrada) {
-    const data = new Date(ordem.dataEntrada);
+        const alturaPagina =
+            doc.internal.pageSize.height;
 
-    if (!isNaN(data.getTime())) {
-        dataFormatada = data.toLocaleDateString("pt-BR");
-    }
-}
+        doc.setDrawColor(220, 225, 230);
+        doc.line(
+            15,
+            alturaPagina - 18,
+            195,
+            alturaPagina - 18
+        );
 
-doc.setFontSize(10);
-doc.text(
-    `Data de entrada: ${dataFormatada}`,
-    20,
-    285
-);
-        // Gerar arquivo
-        doc.save(`Ordem-de-Servico-${ordem.id}.pdf`);
+        doc.setTextColor(120, 120, 120);
+        doc.setFontSize(8);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            "Gerado pelo OfiTech - Sistema de Gestão para Oficinas Mecânicas",
+            105,
+            alturaPagina - 10,
+            { align: "center" }
+        );
+
+        // =========================
+        // GERAR ARQUIVO
+        // =========================
+
+        doc.save(
+            `Ordem-de-Servico-${ordem.id}.pdf`
+        );
 
     } catch (erro) {
-        console.error("Erro ao gerar PDF:", erro);
-        alert("Erro ao gerar o PDF.");
+
+        console.error(
+            "Erro ao gerar PDF:",
+            erro
+        );
+
+        alert(
+            "Erro ao gerar o PDF."
+        );
     }
 }
+
 function iniciarArraste(event) {
     event.dataTransfer.setData(
         "text/plain",
