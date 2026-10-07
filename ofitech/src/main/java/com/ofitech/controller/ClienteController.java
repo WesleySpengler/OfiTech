@@ -35,14 +35,36 @@ public class ClienteController {
     @GetMapping
     public List<Cliente> listarTodos(Authentication authentication) {
 
-        Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
 
-        return clienteService.listarTodos(usuario.getOficina().getId());
+        return clienteService.listarTodos(
+                usuario.getOficina().getId()
+        );
     }
 
     @GetMapping("/{id}")
-    public Cliente buscarPorId(@PathVariable Long id) {
-        return clienteService.buscarPorId(id);
+    public Cliente buscarPorId(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        Cliente cliente =
+                clienteService.buscarPorId(id);
+
+        if (cliente == null) {
+            return null;
+        }
+
+        if (!cliente.getOficina().getId()
+                .equals(usuario.getOficina().getId())) {
+
+            return null;
+        }
+
+        return cliente;
     }
 
     @PostMapping
@@ -50,7 +72,8 @@ public class ClienteController {
             @RequestBody Cliente cliente,
             Authentication authentication) {
 
-        Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
 
         cliente.setOficina(usuario.getOficina());
 
@@ -60,11 +83,22 @@ public class ClienteController {
     @PutMapping("/{id}")
     public Cliente atualizar(
             @PathVariable Long id,
-            @RequestBody Cliente cliente) {
+            @RequestBody Cliente cliente,
+            Authentication authentication) {
 
-        Cliente clienteExistente = clienteService.buscarPorId(id);
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        Cliente clienteExistente =
+                clienteService.buscarPorId(id);
 
         if (clienteExistente == null) {
+            return null;
+        }
+
+        if (!clienteExistente.getOficina().getId()
+                .equals(usuario.getOficina().getId())) {
+
             return null;
         }
 
@@ -77,7 +111,25 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
-    public String excluir(@PathVariable Long id) {
+    public String excluir(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        Cliente cliente =
+                clienteService.buscarPorId(id);
+
+        if (cliente == null) {
+            return "Cliente não encontrado.";
+        }
+
+        if (!cliente.getOficina().getId()
+                .equals(usuario.getOficina().getId())) {
+
+            return "Acesso não permitido.";
+        }
 
         clienteService.excluir(id);
 

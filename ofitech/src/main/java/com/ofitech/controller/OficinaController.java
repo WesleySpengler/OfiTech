@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,21 +38,38 @@ public class OficinaController {
     @GetMapping
     public Oficina buscarMinhaOficina(Authentication authentication) {
 
-        Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
 
         return usuario.getOficina();
     }
 
     @GetMapping("/{id}")
-    public Oficina buscarPorId(@PathVariable Long id) {
+    public Oficina buscarPorId(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        if (!usuario.getOficina().getId().equals(id)) {
+            return null;
+        }
+
         return oficinaService.buscarPorId(id);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Oficina salvar(
             @RequestPart("oficina") Oficina oficina,
-            @RequestPart(value = "logo", required = false) MultipartFile logo)
+            @RequestPart(value = "logo", required = false) MultipartFile logo,
+            Authentication authentication)
             throws IOException {
+
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        oficina.setId(usuario.getOficina().getId());
 
         if (logo != null && !logo.isEmpty()) {
             oficina.setLogo(logo.getBytes());
@@ -68,10 +84,19 @@ public class OficinaController {
     public Oficina atualizar(
             @PathVariable Long id,
             @RequestPart("oficina") Oficina oficina,
-            @RequestPart(value = "logo", required = false) MultipartFile logo)
+            @RequestPart(value = "logo", required = false) MultipartFile logo,
+            Authentication authentication)
             throws IOException {
 
-        Oficina oficinaExistente = oficinaService.buscarPorId(id);
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        if (!usuario.getOficina().getId().equals(id)) {
+            return null;
+        }
+
+        Oficina oficinaExistente =
+                oficinaService.buscarPorId(id);
 
         if (oficinaExistente == null) {
             return null;
@@ -94,7 +119,16 @@ public class OficinaController {
     }
 
     @DeleteMapping("/{id}")
-    public String excluir(@PathVariable Long id) {
+    public String excluir(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        if (!usuario.getOficina().getId().equals(id)) {
+            return "Acesso não permitido.";
+        }
 
         oficinaService.excluir(id);
 
@@ -102,9 +136,19 @@ public class OficinaController {
     }
 
     @GetMapping("/{id}/logo")
-    public ResponseEntity<byte[]> buscarLogo(@PathVariable Long id) {
+    public ResponseEntity<byte[]> buscarLogo(
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        Oficina oficina = oficinaService.buscarPorId(id);
+        Usuario usuario =
+                usuarioService.buscarPorEmail(authentication.getName());
+
+        if (!usuario.getOficina().getId().equals(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Oficina oficina =
+                oficinaService.buscarPorId(id);
 
         if (oficina == null || oficina.getLogo() == null) {
             return ResponseEntity.notFound().build();
@@ -112,7 +156,7 @@ public class OficinaController {
 
         return ResponseEntity
                 .ok()
-                .contentType(MediaType.IMAGE_JPEG)
+                .contentType(MediaType.IMAGE_PNG)
                 .body(oficina.getLogo());
     }
 }
