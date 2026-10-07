@@ -62,6 +62,19 @@ public class ItemOrdemServicoService {
     return itemRepository.save(item);
     }
 
+    public ItemOrdemServico atualizarOrdem(Long id, Integer ordem) {
+
+    ItemOrdemServico item = itemRepository.findById(id).orElse(null);
+
+    if (item == null) {
+        return null;
+    }
+
+    item.setOrdem(ordem);
+
+    return itemRepository.save(item);
+    }
+
     public void excluir(Long id) {
         itemRepository.deleteById(id);
     }

@@ -1364,6 +1364,71 @@ async function carregarItensOrdemServico(ordemId) {
         listaItens.innerHTML = `
             <h4>Itens da Ordem de Serviço</h4>
         `;
+        listaItens.ondragover = function(event) {
+         event.preventDefault();
+        };
+        listaItens.ondrop = function(event) {
+
+    event.preventDefault();
+
+    const itemId = event.dataTransfer.getData("text/plain");
+
+    const itemArrastado = document.querySelector(
+        `.item-ordem[data-item-id="${itemId}"]`
+    );
+
+    const itemDestino = event.target.closest(".item-ordem");
+
+    if (!itemArrastado || !itemDestino) {
+        return;
+    }
+
+    if (itemArrastado === itemDestino) {
+        return;
+    }
+
+    const rect = itemDestino.getBoundingClientRect();
+
+if (event.clientY < rect.top + rect.height / 2) {
+    itemDestino.before(itemArrastado);
+} else {
+    itemDestino.after(itemArrastado);
+}
+
+    const itensReordenados =
+    listaItens.querySelectorAll(".item-ordem");
+
+itensReordenados.forEach((item, index) => {
+
+    const numero = item.querySelector("p strong");
+
+    numero.textContent = `${index + 1}.`;
+});
+itensReordenados.forEach(async (item, index) => {
+
+    const itemId = item.dataset.itemId;
+    const novaOrdem = index + 1;
+
+    try {
+
+        const resposta = await fetch(
+            `/itens-ordem-servico/${itemId}/ordem?ordem=${novaOrdem}`,
+            {
+                method: "PUT"
+            }
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao salvar a ordem do item.");
+        }
+
+    } catch (erro) {
+
+        console.error(erro);
+    }
+});
+};
+
 
         itens.forEach(item => {
 
@@ -1371,25 +1436,31 @@ async function carregarItensOrdemServico(ordemId) {
                 item.quantidade * item.valorUnitario;
 
             listaItens.innerHTML += `
-    <div>
-        <p>
-            <strong>${item.ordem}.</strong>
-            <strong>${item.tipo}:</strong>
-            ${item.descricao}
-            | Qtd: ${item.quantidade}
-            | R$ ${subtotal.toFixed(2)}
-        </p>
+    <div
+    class="item-ordem"
+    draggable="true"
+    data-item-id="${item.id}"
+    ondragstart="iniciarArraste(event)"
+    ondragend="finalizarArraste(event)"
+>
+    <p>
+        <strong>${item.ordem}.</strong>
+        <strong>${item.tipo}:</strong>
+        ${item.descricao}
+        | Qtd: ${item.quantidade}
+        | R$ ${subtotal.toFixed(2)}
+    </p>
 
-        <button onclick="editarItemOrdemServico(${item.id}, ${ordemId})">
-            Editar
-        </button>
+    <button onclick="editarItemOrdemServico(${item.id}, ${ordemId})">
+        Editar
+    </button>
 
-        <button onclick="excluirItemOrdemServico(${item.id}, ${ordemId})">
-            Excluir
-        </button>
+    <button onclick="excluirItemOrdemServico(${item.id}, ${ordemId})">
+        Excluir
+    </button>
 
-        <div id="editarItem-${item.id}" style="display: none;"></div>
-    </div>
+    <div id="editarItem-${item.id}" style="display: none;"></div>
+</div>
 `;
         });
 
@@ -1775,4 +1846,20 @@ doc.text(
         console.error("Erro ao gerar PDF:", erro);
         alert("Erro ao gerar o PDF.");
     }
+}
+function iniciarArraste(event) {
+    event.dataTransfer.setData(
+        "text/plain",
+        event.currentTarget.dataset.itemId
+    );
+
+    event.currentTarget.classList.add("arrastando");
+}
+
+function permitirSoltar(event) {
+    event.preventDefault();
+}
+
+function finalizarArraste(event) {
+    event.currentTarget.classList.remove("arrastando");
 }
