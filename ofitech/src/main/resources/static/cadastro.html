@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -13,34 +12,119 @@
 
 <body>
 
-    <div class="login-container">
+    <div class="login-container cadastro-container">
 
-        <h1>OfiTech</h1>
+        <div class="login-logo">
 
-        <h2>Criar conta</h2>
+            <div class="login-logo-icon">
+                O
+            </div>
+
+            <h1>OfiTech</h1>
+
+            <p>Gestão inteligente para sua oficina</p>
+
+        </div>
+
+        <div class="login-titulo">
+
+            <h2>Criar conta</h2>
+
+            <p>
+                Cadastre sua oficina para começar
+            </p>
+
+        </div>
 
         <form id="formCadastro">
 
-            <input type="text" id="nome" placeholder="Nome" required>
+            <label for="nome">
+                Seu nome
+            </label>
 
-            <input type="email" id="email" placeholder="E-mail" required>
+            <input
+                type="text"
+                id="nome"
+                placeholder="Digite seu nome"
+                required
+            >
 
-            <input type="password" id="senha" placeholder="Senha" required>
+            <label for="email">
+                E-mail
+            </label>
 
-            <input type="text" id="nomeOficina" placeholder="Nome da oficina" required>
+            <input
+                type="email"
+                id="email"
+                placeholder="seuemail@exemplo.com"
+                required
+            >
 
-            <input type="text" id="cnpj" placeholder="CNPJ">
+            <label for="senha">
+                Senha
+            </label>
 
-            <input type="text" id="telefone" placeholder="Telefone">
+            <input
+                type="password"
+                id="senha"
+                placeholder="Crie uma senha"
+                required
+            >
 
-            <button type="submit">Criar conta</button>
+            <div class="cadastro-divisao">
+                Dados da oficina
+            </div>
+
+            <label for="nomeOficina">
+                Nome da oficina
+            </label>
+
+            <input
+                type="text"
+                id="nomeOficina"
+                placeholder="Nome da sua oficina"
+                required
+            >
+
+            <label for="cnpj">
+                CNPJ
+            </label>
+
+            <input
+                type="text"
+                id="cnpj"
+                placeholder="CNPJ (opcional)"
+            >
+
+            <label for="telefone">
+                Telefone
+            </label>
+
+            <input
+                type="text"
+                id="telefone"
+                placeholder="Telefone (opcional)"
+            >
+
+            <button type="submit">
+                Criar conta
+            </button>
 
         </form>
 
-        <p>
-            Já possui uma conta?
-            <a href="/login.html">Entrar</a>
-        </p>
+        <div class="login-cadastro">
+
+            <span>Já possui uma conta?</span>
+
+            <a href="/login.html">
+                Entrar
+            </a>
+
+        </div>
+
+        <div class="login-rodape">
+            OfiTech • Gestão para oficinas mecânicas
+        </div>
 
     </div>
 
@@ -100,4 +184,3 @@
 </body>
 
 </html>
-

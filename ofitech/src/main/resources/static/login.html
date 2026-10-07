@@ -14,34 +14,71 @@
 
     <div class="login-container">
 
-        <h1>OfiTech</h1>
+        <div class="login-logo">
+            <div class="login-logo-icon">
+                
+            </div>
 
-        <h2>Entrar</h2>
+            <h1>OfiTech</h1>
+
+            <p>Gestão inteligente para sua oficina</p>
+        </div>
+
+        <div class="login-titulo">
+            <h2>Entrar</h2>
+
+            <p>
+                Acesse sua conta para continuar
+            </p>
+        </div>
 
         <form method="post" action="/login">
 
+            <label for="email">
+                E-mail
+            </label>
+
             <input
                 type="email"
+                id="email"
                 name="username"
-                placeholder="E-mail"
+                placeholder="seuemail@exemplo.com"
+                autocomplete="email"
                 required
             >
+
+            <label for="senha">
+                Senha
+            </label>
 
             <input
                 type="password"
+                id="senha"
                 name="password"
-                placeholder="Senha"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
                 required
             >
 
-            <button type="submit">Entrar</button>
+            <button type="submit">
+                Entrar
+            </button>
 
         </form>
 
-        <p>
-            Ainda não possui uma conta?
-            <a href="/cadastro.html">Criar conta</a>
-        </p>
+        <div class="login-cadastro">
+
+            <span>Ainda não possui uma conta?</span>
+
+            <a href="/cadastro.html">
+                Criar conta
+            </a>
+
+        </div>
+
+        <div class="login-rodape">
+            OfiTech • Gestão para oficinas mecânicas
+        </div>
 
     </div>
 
