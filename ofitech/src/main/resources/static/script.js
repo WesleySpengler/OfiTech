@@ -1678,7 +1678,9 @@ async function exportarOrdemServicoPDF(ordemId) {
 
         const ordem = await resposta.json();
 
-        const respostaItens = await fetch(`/itens-ordem-servico/ordem/${ordemId}`);
+        const respostaItens = await fetch(
+            `/itens-ordem-servico/ordem/${ordemId}`
+        );
 
         if (!respostaItens.ok) {
             alert("Não foi possível carregar os itens da ordem.");
@@ -1687,7 +1689,9 @@ async function exportarOrdemServicoPDF(ordemId) {
 
         const itens = await respostaItens.json();
 
-        const respostaTotal = await fetch(`/ordens-servico/${ordemId}/total`);
+        const respostaTotal = await fetch(
+            `/ordens-servico/${ordemId}/total`
+        );
 
         if (!respostaTotal.ok) {
             alert("Não foi possível carregar o total da ordem.");
@@ -1718,7 +1722,7 @@ async function exportarOrdemServicoPDF(ordemId) {
         // =========================
 
         doc.setFillColor(55, 65, 81);
-        doc.rect(0, 0, 210, 38, "F");
+        doc.rect(0, 0, 210, 42, "F");
 
         // Logo
         try {
@@ -1740,10 +1744,10 @@ async function exportarOrdemServicoPDF(ordemId) {
                 doc.addImage(
                     logoData,
                     "JPEG",
-                    165,
-                    5,
-                    30,
-                    28
+                    15,
+                    6,
+                    32,
+                    30
                 );
             }
         } catch (erroLogo) {
@@ -1753,81 +1757,54 @@ async function exportarOrdemServicoPDF(ordemId) {
             );
         }
 
+        // Dados da mecânica
         doc.setTextColor(255, 255, 255);
 
-        doc.setFontSize(20);
-        doc.setFont(undefined, "bold");
-        doc.text("OFITECH", 20, 15);
-
-        doc.setFontSize(10);
-        doc.setFont(undefined, "normal");
-        doc.text(
-            "Sistema de Gestão para Oficinas Mecânicas",
-            20,
-            23
-        );
-
-        doc.setFontSize(14);
-        doc.setFont(undefined, "bold");
-        doc.text(
-            `ORDEM DE SERVIÇO #${ordem.id}`,
-            20,
-            32
-        );
-
-        // =========================
-        // DATA
-        // =========================
-
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(10);
-        doc.setFont(undefined, "normal");
-
-        doc.text(
-            `Data de entrada: ${dataFormatada}`,
-            190,
-            48,
-            { align: "right" }
-        );
-
-        // =========================
-        // OFICINA
-        // =========================
-
-        doc.setFillColor(240, 244, 248);
-        doc.roundedRect(15, 55, 180, 42, 3, 3, "F");
-
-       doc.setTextColor(55, 65, 81);
         doc.setFontSize(13);
         doc.setFont(undefined, "bold");
-        doc.text("OFICINA", 20, 64);
 
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(10);
+        doc.text(
+            ordem.oficina?.nomeFantasia ||
+            ordem.oficina?.nomeEmpresa ||
+            "Oficina Mecânica",
+            53,
+            14
+        );
+
+        doc.setFontSize(9);
         doc.setFont(undefined, "normal");
-
-        doc.text(
-            `Empresa: ${ordem.oficina?.nomeEmpresa || "Não informado"}`,
-            20,
-            72
-        );
-
-        doc.text(
-            `Nome Fantasia: ${ordem.oficina?.nomeFantasia || "Não informado"}`,
-            20,
-            79
-        );
 
         doc.text(
             `CNPJ: ${ordem.oficina?.cnpj || "Não informado"}`,
-            20,
-            86
+            53,
+            21
         );
 
         doc.text(
             `Telefone: ${ordem.oficina?.telefone || "Não informado"}`,
-            110,
-            86
+            53,
+            28
+        );
+
+        // Ordem e data
+        doc.setFontSize(12);
+        doc.setFont(undefined, "bold");
+
+        doc.text(
+            `ORDEM #${ordem.id}`,
+            195,
+            16,
+            { align: "right" }
+        );
+
+        doc.setFontSize(9);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            `Data: ${dataFormatada}`,
+            195,
+            25,
+            { align: "right" }
         );
 
         // =========================
@@ -1835,12 +1812,21 @@ async function exportarOrdemServicoPDF(ordemId) {
         // =========================
 
         doc.setFillColor(248, 250, 252);
-        doc.roundedRect(15, 103, 87, 42, 3, 3, "F");
+        doc.roundedRect(
+            15,
+            50,
+            87,
+            42,
+            3,
+            3,
+            "F"
+        );
 
         doc.setTextColor(55, 65, 81);
         doc.setFontSize(13);
         doc.setFont(undefined, "bold");
-        doc.text("CLIENTE", 20, 112);
+
+        doc.text("CLIENTE", 20, 59);
 
         doc.setTextColor(60, 60, 60);
         doc.setFontSize(10);
@@ -1849,19 +1835,19 @@ async function exportarOrdemServicoPDF(ordemId) {
         doc.text(
             `Nome: ${ordem.cliente?.nome || "Não informado"}`,
             20,
-            120
+            67
         );
 
         doc.text(
             `CPF: ${ordem.cliente?.cpf || "Não informado"}`,
             20,
-            127
+            74
         );
 
         doc.text(
             `Telefone: ${ordem.cliente?.telefone || "Não informado"}`,
             20,
-            134
+            81
         );
 
         // =========================
@@ -1869,35 +1855,48 @@ async function exportarOrdemServicoPDF(ordemId) {
         // =========================
 
         doc.setFillColor(248, 250, 252);
-        doc.roundedRect(108, 103, 87, 42, 3, 3, "F");
+        doc.roundedRect(
+            108,
+            50,
+            87,
+            42,
+            3,
+            3,
+            "F"
+        );
 
-       doc.setTextColor(55, 65, 81);
+        doc.setTextColor(55, 65, 81);
         doc.setFontSize(13);
         doc.setFont(undefined, "bold");
-        doc.text("VEÍCULO", 113, 112);
+
+        doc.text("VEÍCULO", 113, 59);
 
         doc.setTextColor(60, 60, 60);
         doc.setFontSize(10);
         doc.setFont(undefined, "normal");
 
         doc.text(
-            `Veículo: ${ordem.veiculo
-                ? `${ordem.veiculo.marca} ${ordem.veiculo.modelo}`
-                : "Não informado"}`,
+            `Veículo: ${
+                ordem.veiculo
+                    ? `${ordem.veiculo.marca} ${ordem.veiculo.modelo}`
+                    : "Não informado"
+            }`,
             113,
-            120
+            67
         );
 
         doc.text(
             `Placa: ${ordem.veiculo?.placa || "Não informado"}`,
             113,
-            127
+            74
         );
 
         doc.text(
-            `Ano: ${ordem.veiculo?.ano || "Não informado"} | Km: ${ordem.veiculo?.quilometragem || "Não informado"}`,
+            `Ano: ${ordem.veiculo?.ano || "Não informado"} | Km: ${
+                ordem.veiculo?.quilometragem || "Não informado"
+            }`,
             113,
-            134
+            81
         );
 
         // =========================
@@ -1905,158 +1904,57 @@ async function exportarOrdemServicoPDF(ordemId) {
         // =========================
 
         doc.setFillColor(240, 244, 248);
-        doc.roundedRect(15, 151, 180, 42, 3, 3, "F");
+        doc.roundedRect(
+            15,
+            99,
+            180,
+            42,
+            3,
+            3,
+            "F"
+        );
 
         doc.setTextColor(55, 65, 81);
         doc.setFontSize(13);
         doc.setFont(undefined, "bold");
-        doc.text("SERVIÇO", 20, 160);
+
+        doc.text("SERVIÇO", 20, 108);
 
         doc.setTextColor(60, 60, 60);
         doc.setFontSize(10);
         doc.setFont(undefined, "normal");
 
         doc.text(
-            `Problema: ${ordem.problemaRelatado || "Não informado"}`,
+            `Problema: ${
+                ordem.problemaRelatado || "Não informado"
+            }`,
             20,
-            168
+            116
         );
 
         doc.text(
-            `Diagnóstico: ${ordem.diagnostico || "Não informado"}`,
+            `Diagnóstico: ${
+                ordem.diagnostico || "Não informado"
+            }`,
             20,
-            175
+            123
         );
 
         doc.text(
             `Status: ${ordem.status || "Não informado"}`,
             20,
-            182
-        );
-
-        // =========================
-        // ITENS
-        // =========================
-
-        doc.setTextColor(55, 65, 81);
-        doc.setFontSize(13);
-        doc.setFont(undefined, "bold");
-        doc.text("PEÇAS / SERVIÇOS", 15, 207);
-
-        // Cabeçalho da tabela
-        doc.setFillColor(13, 71, 161);
-        doc.rect(15, 212, 180, 9, "F");
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(9);
-        doc.setFont(undefined, "bold");
-
-        doc.text("Descrição", 20, 218);
-        doc.text("Qtd.", 125, 218);
-        doc.text("Unit.", 145, 218);
-        doc.text("Subtotal", 175, 218);
-
-        let y = 228;
-
-        doc.setFont(undefined, "normal");
-        doc.setTextColor(60, 60, 60);
-
-        if (itens.length === 0) {
-
-            doc.text(
-                "Nenhum item cadastrado.",
-                20,
-                y
-            );
-
-            y += 10;
-
-        } else {
-
-            itens.forEach((item, index) => {
-
-                const subtotal =
-                    Number(item.quantidade) *
-                    Number(item.valorUnitario);
-
-                if (index % 2 === 0) {
-                    doc.setFillColor(248, 250, 252);
-                    doc.rect(15, y - 5, 180, 9, "F");
-                }
-
-                doc.setFontSize(9);
-
-                let descricao =
-                    `${item.tipo} - ${item.descricao}`;
-
-                if (descricao.length > 55) {
-                    descricao =
-                        descricao.substring(0, 52) + "...";
-                }
-
-                doc.text(descricao, 20, y);
-
-                doc.text(
-                    String(item.quantidade),
-                    127,
-                    y
-                );
-
-                doc.text(
-                    `R$ ${Number(item.valorUnitario).toFixed(2)}`,
-                    143,
-                    y
-                );
-
-                doc.text(
-                    `R$ ${subtotal.toFixed(2)}`,
-                    174,
-                    y
-                );
-
-                y += 9;
-
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-            });
-        }
-
-        // =========================
-        // TOTAL
-        // =========================
-
-        y += 5;
-
-        doc.setFillColor(55, 65, 81);
-doc.roundedRect(125, y, 70, 14, 3, 3, "F");
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
-        doc.setFont(undefined, "bold");
-
-        doc.text(
-            `TOTAL: R$ ${Number(total).toFixed(2)}`,
-            190,
-            y + 9,
-            { align: "right" }
+            130
         );
 
         // =========================
         // OBSERVAÇÕES
         // =========================
 
+        let y = 150;
+
         if (ordem.observacoes) {
 
-            y += 25;
-
-            if (y > 255) {
-                doc.addPage();
-                y = 25;
-            }
-
-          doc.setTextColor(55, 65, 81);
+            doc.setTextColor(55, 65, 81);
             doc.setFontSize(13);
             doc.setFont(undefined, "bold");
 
@@ -2083,36 +1981,262 @@ doc.roundedRect(125, y, 70, 14, 3, 3, "F");
                 15,
                 y
             );
+
+            y += (observacoes.length * 5) + 8;
         }
+
+        // =========================
+        // PEÇAS / SERVIÇOS
+        // =========================
+
+        doc.setTextColor(55, 65, 81);
+        doc.setFontSize(13);
+        doc.setFont(undefined, "bold");
+
+        doc.text(
+            "PEÇAS / SERVIÇOS",
+            15,
+            y
+        );
+
+        y += 5;
+
+        // Cabeçalho da tabela
+        doc.setFillColor(55, 65, 81);
+
+        doc.rect(
+            15,
+            y,
+            180,
+            9,
+            "F"
+        );
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont(undefined, "bold");
+
+        doc.text(
+            "Descrição",
+            20,
+            y + 6
+        );
+
+        doc.text(
+            "Qtd.",
+            127,
+            y + 6
+        );
+
+        doc.text(
+            "Unit.",
+            145,
+            y + 6
+        );
+
+        doc.text(
+            "Subtotal",
+            174,
+            y + 6
+        );
+
+        y += 16;
+
+        doc.setFont(undefined, "normal");
+        doc.setTextColor(60, 60, 60);
+
+        // =========================
+        // ITENS
+        // =========================
+
+        if (itens.length === 0) {
+
+            doc.text(
+                "Nenhum item cadastrado.",
+                20,
+                y
+            );
+
+            y += 10;
+
+        } else {
+
+            itens.forEach((item, index) => {
+
+                const subtotal =
+                    Number(item.quantidade) *
+                    Number(item.valorUnitario);
+
+                if (index % 2 === 0) {
+
+                    doc.setFillColor(
+                        248,
+                        250,
+                        252
+                    );
+
+                    doc.rect(
+                        15,
+                        y - 5,
+                        180,
+                        9,
+                        "F"
+                    );
+                }
+
+                doc.setFontSize(9);
+
+                let descricao =
+                    `${item.tipo} - ${item.descricao}`;
+
+                if (descricao.length > 55) {
+                    descricao =
+                        descricao.substring(0, 52) + "...";
+                }
+
+                doc.text(
+                    descricao,
+                    20,
+                    y
+                );
+
+                doc.text(
+                    String(item.quantidade),
+                    127,
+                    y
+                );
+
+                doc.text(
+                    `R$ ${Number(
+                        item.valorUnitario
+                    ).toFixed(2)}`,
+                    143,
+                    y
+                );
+
+                doc.text(
+                    `R$ ${subtotal.toFixed(2)}`,
+                    174,
+                    y
+                );
+
+                y += 9;
+
+                // Se chegar perto do final da página
+                if (y > 270) {
+
+                    doc.addPage();
+
+                    y = 20;
+                }
+            });
+        }
+
+        // =========================
+        // TOTAL
+        // =========================
+
+        y += 5;
+
+        if (y > 270) {
+
+            doc.addPage();
+
+            y = 25;
+        }
+
+        doc.setFillColor(
+            55,
+            65,
+            81
+        );
+
+        doc.roundedRect(
+            125,
+            y,
+            70,
+            14,
+            3,
+            3,
+            "F"
+        );
+
+        doc.setTextColor(
+            255,
+            255,
+            255
+        );
+
+        doc.setFontSize(12);
+        doc.setFont(undefined, "bold");
+
+        doc.text(
+            `TOTAL: R$ ${Number(total).toFixed(2)}`,
+            190,
+            y + 9,
+            {
+                align: "right"
+            }
+        );
 
         // =========================
         // RODAPÉ
         // =========================
 
-        const alturaPagina =
-            doc.internal.pageSize.height;
+        const quantidadePaginas =
+            doc.internal.getNumberOfPages();
 
-        doc.setDrawColor(220, 225, 230);
-        doc.line(
-            15,
-            alturaPagina - 18,
-            195,
-            alturaPagina - 18
-        );
+        for (
+            let pagina = 1;
+            pagina <= quantidadePaginas;
+            pagina++
+        ) {
 
-        doc.setTextColor(120, 120, 120);
-        doc.setFontSize(8);
-        doc.setFont(undefined, "normal");
+            doc.setPage(pagina);
 
-        doc.text(
-            "Gerado pelo OfiTech - Sistema de Gestão para Oficinas Mecânicas",
-            105,
-            alturaPagina - 10,
-            { align: "center" }
-        );
+            const alturaPagina =
+                doc.internal.pageSize.height;
+
+            doc.setDrawColor(
+                220,
+                225,
+                230
+            );
+
+            doc.line(
+                15,
+                alturaPagina - 18,
+                195,
+                alturaPagina - 18
+            );
+
+            doc.setTextColor(
+                120,
+                120,
+                120
+            );
+
+            doc.setFontSize(8);
+            doc.setFont(undefined, "normal");
+
+            doc.text(
+                `Ordem de Serviço #${ordem.id}`,
+                15,
+                alturaPagina - 10
+            );
+
+            doc.text(
+                `Página ${pagina} de ${quantidadePaginas}`,
+                195,
+                alturaPagina - 10,
+                {
+                    align: "right"
+                }
+            );
+        }
 
         // =========================
-        // GERAR ARQUIVO
+        // SALVAR PDF
         // =========================
 
         doc.save(
