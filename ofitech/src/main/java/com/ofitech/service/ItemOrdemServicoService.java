@@ -21,7 +21,23 @@ public class ItemOrdemServicoService {
     }
 
     public List<ItemOrdemServico> listarPorOrdemServico(Long ordemServicoId) {
-    return itemRepository.findByOrdemServicoId(ordemServicoId);
+
+    List<ItemOrdemServico> itens =
+            itemRepository.findByOrdemServicoId(ordemServicoId);
+
+    int ordem = 1;
+
+    for (ItemOrdemServico item : itens) {
+
+        if (item.getOrdem() == null) {
+            item.setOrdem(ordem);
+            itemRepository.save(item);
+        }
+
+        ordem++;
+    }
+
+    return itemRepository.findByOrdemServicoIdOrderByOrdemAsc(ordemServicoId);
     }
     
     public ItemOrdemServico buscarPorId(Long id) {
@@ -29,8 +45,21 @@ public class ItemOrdemServicoService {
     }
 
     
-    public ItemOrdemServico salvar(ItemOrdemServico item) {
-        return itemRepository.save(item);
+   public ItemOrdemServico salvar(ItemOrdemServico item) {
+
+    if (item.getOrdem() == null && item.getOrdemServico() != null) {
+
+        List<ItemOrdemServico> itens =
+                itemRepository.findByOrdemServicoId(
+                        item.getOrdemServico().getId()
+                );
+
+        int proximaOrdem = itens.size() + 1;
+
+        item.setOrdem(proximaOrdem);
+    }
+
+    return itemRepository.save(item);
     }
 
     public void excluir(Long id) {

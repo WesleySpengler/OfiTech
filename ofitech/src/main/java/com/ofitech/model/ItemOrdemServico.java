@@ -24,9 +24,12 @@ public class ItemOrdemServico {
 
     private BigDecimal valorUnitario;
 
+    private Integer ordem;
+
     @ManyToOne
     @JoinColumn(name = "ordem_servico_id")
     private OrdemServico ordemServico;
+
 
     public ItemOrdemServico() {
     }
@@ -72,6 +75,13 @@ public class ItemOrdemServico {
 
     public void setValorUnitario(BigDecimal valorUnitario) {
         this.valorUnitario = valorUnitario;
+    }
+    public Integer getOrdem() {
+    return ordem;
+    }
+
+    public void setOrdem(Integer ordem) {
+    this.ordem = ordem;
     }
 
     public OrdemServico getOrdemServico() {

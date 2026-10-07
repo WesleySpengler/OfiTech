@@ -1065,10 +1065,12 @@ async function listarOrdensServico() {
         ${ordem.diagnostico || "Não informado"}
     </p>
 
-    <p>
-        <strong>Status:</strong>
+  <p>
+    <strong>Status:</strong>
+    <span class="status-os ${ordem.status ? ordem.status.toLowerCase().replace(/\s/g, "-") : ""}">
         ${ordem.status || "Não informado"}
-    </p>
+    </span>
+</p>
 
     <p>
         <strong>Observações:</strong>
@@ -1371,6 +1373,7 @@ async function carregarItensOrdemServico(ordemId) {
             listaItens.innerHTML += `
     <div>
         <p>
+            <strong>${item.ordem}.</strong>
             <strong>${item.tipo}:</strong>
             ${item.descricao}
             | Qtd: ${item.quantidade}

@@ -9,4 +9,5 @@ import com.ofitech.model.ItemOrdemServico;
 public interface ItemOrdemServicoRepository extends JpaRepository<ItemOrdemServico, Long> {
 
     List<ItemOrdemServico> findByOrdemServicoId(Long ordemServicoId);
+    List<ItemOrdemServico> findByOrdemServicoIdOrderByOrdemAsc(Long ordemServicoId);
 }
