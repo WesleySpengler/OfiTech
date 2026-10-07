@@ -84,9 +84,9 @@ function mostrarClientes() {
     document.getElementById("telaClientes").style.display = "block";
     document.getElementById("telaVeiculos").style.display = "none";
     document.getElementById("telaOrdensServico").style.display = "none";
+    document.getElementById("telaOficina").style.display = "none";
 
     listarClientes();
-
 }
 
 function mostrarOficina() {
@@ -109,53 +109,87 @@ async function carregarOficina() {
             throw new Error("Erro ao buscar os dados da oficina.");
         }
 
-        const oficinas = await resposta.json();
+        const oficina = await resposta.json();
 
-        if (oficinas.length === 0) {
+        if (!oficina || !oficina.id) {
             return;
         }
 
-        const oficina = oficinas[0];
+        if (oficina.logo) {
 
-        if (oficina.id && oficina.logo) {
-    const previewLogo = document.getElementById("previewLogoOficina");
+            const previewLogo =
+                document.getElementById("previewLogoOficina");
 
-    previewLogo.src = `/oficina/${oficina.id}/logo`;
-    previewLogo.style.display = "block";
-}
-        document.getElementById("nomeEmpresa").value = oficina.nomeEmpresa || "";
-        document.getElementById("nomeFantasia").value = oficina.nomeFantasia || "";
-        document.getElementById("cnpj").value = oficina.cnpj || "";
-        document.getElementById("telefoneOficina").value = oficina.telefone || "";
-        document.getElementById("emailOficina").value = oficina.email || "";
-        document.getElementById("enderecoOficina").value = oficina.endereco || "";
-        document.getElementById("cidadeOficina").value = oficina.cidade || "";
-        document.getElementById("estadoOficina").value = oficina.estado || "";
+            previewLogo.src = `/oficina/${oficina.id}/logo`;
+            previewLogo.style.display = "block";
+        }
+
+        document.getElementById("nomeEmpresa").value =
+            oficina.nomeEmpresa || "";
+
+        document.getElementById("nomeFantasia").value =
+            oficina.nomeFantasia || "";
+
+        document.getElementById("cnpj").value =
+            oficina.cnpj || "";
+
+        document.getElementById("telefoneOficina").value =
+            oficina.telefone || "";
+
+        document.getElementById("emailOficina").value =
+            oficina.email || "";
+
+        document.getElementById("enderecoOficina").value =
+            oficina.endereco || "";
+
+        document.getElementById("cidadeOficina").value =
+            oficina.cidade || "";
+
+        document.getElementById("estadoOficina").value =
+            oficina.estado || "";
 
     } catch (erro) {
 
         console.error(erro);
 
         alert("Não foi possível carregar os dados da oficina.");
-
     }
 }
 
+
 async function salvarOficina(event) {
+
     event.preventDefault();
 
     const oficina = {
-        nomeEmpresa: document.getElementById("nomeEmpresa").value,
-        nomeFantasia: document.getElementById("nomeFantasia").value,
-        cnpj: document.getElementById("cnpj").value,
-        telefone: document.getElementById("telefoneOficina").value,
-        email: document.getElementById("emailOficina").value,
-        endereco: document.getElementById("enderecoOficina").value,
-        cidade: document.getElementById("cidadeOficina").value,
-        estado: document.getElementById("estadoOficina").value
+
+        nomeEmpresa:
+            document.getElementById("nomeEmpresa").value,
+
+        nomeFantasia:
+            document.getElementById("nomeFantasia").value,
+
+        cnpj:
+            document.getElementById("cnpj").value,
+
+        telefone:
+            document.getElementById("telefoneOficina").value,
+
+        email:
+            document.getElementById("emailOficina").value,
+
+        endereco:
+            document.getElementById("enderecoOficina").value,
+
+        cidade:
+            document.getElementById("cidadeOficina").value,
+
+        estado:
+            document.getElementById("estadoOficina").value
     };
 
-    const arquivoLogo = document.getElementById("logoOficina").files[0];
+    const arquivoLogo =
+        document.getElementById("logoOficina").files[0];
 
     const dados = new FormData();
 
@@ -172,38 +206,46 @@ async function salvarOficina(event) {
     }
 
     try {
-        const respostaOficinas = await fetch("/oficina");
 
-        if (!respostaOficinas.ok) {
-            throw new Error("Erro ao buscar a oficina existente.");
+        const respostaOficina =
+            await fetch("/oficina");
+
+        if (!respostaOficina.ok) {
+            throw new Error("Erro ao buscar a oficina.");
         }
 
-        const oficinas = await respostaOficinas.json();
+        const oficinaExistente =
+            await respostaOficina.json();
 
         let resposta;
 
-        if (oficinas.length > 0) {
+        if (oficinaExistente && oficinaExistente.id) {
 
-            const oficinaExistente = oficinas[0];
-
-            resposta = await fetch(`/oficina/${oficinaExistente.id}`, {
-                method: "PUT",
-                body: dados
-            });
+            resposta = await fetch(
+                `/oficina/${oficinaExistente.id}`,
+                {
+                    method: "PUT",
+                    body: dados
+                }
+            );
 
         } else {
 
-            resposta = await fetch("/oficina", {
-                method: "POST",
-                body: dados
-            });
+            resposta = await fetch(
+                "/oficina",
+                {
+                    method: "POST",
+                    body: dados
+                }
+            );
         }
 
         if (!resposta.ok) {
             throw new Error("Erro ao salvar oficina.");
         }
 
-        const oficinaSalva = await resposta.json();
+        const oficinaSalva =
+            await resposta.json();
 
         alert("Dados da oficina salvos com sucesso!");
 
@@ -212,7 +254,9 @@ async function salvarOficina(event) {
         await carregarOficina();
 
     } catch (erro) {
+
         console.error(erro);
+
         alert("Não foi possível salvar os dados da oficina.");
     }
 }
@@ -388,9 +432,9 @@ function mostrarVeiculos() {
     document.getElementById("telaClientes").style.display = "none";
     document.getElementById("telaVeiculos").style.display = "block";
     document.getElementById("telaOrdensServico").style.display = "none";
+    document.getElementById("telaOficina").style.display = "none";
 
     listarVeiculos();
-
 }
 function mostrarOrdensServico() {
 
@@ -398,8 +442,11 @@ function mostrarOrdensServico() {
     document.getElementById("telaClientes").style.display = "none";
     document.getElementById("telaVeiculos").style.display = "none";
     document.getElementById("telaOrdensServico").style.display = "block";
-    listarOrdensServico();
+    document.getElementById("telaOficina").style.display = "none";
 
+    setTimeout(() => {
+        listarOrdensServico();
+    }, 300);
 }
 async function listarVeiculos() {
 
@@ -947,10 +994,6 @@ async function salvarOrdemServico(event) {
 
         veiculo: {
             id: veiculoId
-        },
-
-        oficina: {
-            id: 1
         }
     };
 
@@ -975,7 +1018,7 @@ async function salvarOrdemServico(event) {
 
         alert(
             "Ordem de serviço #" +
-            novaOrdem.id +
+            novaOrdem.numero +
             " criada com sucesso!"
         );
 
@@ -1038,7 +1081,7 @@ async function listarOrdensServico() {
             item.className = "resultado";
 
             item.innerHTML = `
-    <h3>Ordem de Serviço #${ordem.id}</h3>
+    <h3>Ordem de Serviço #${ordem.numero}</h3>
 
     <p>
         <strong>Cliente:</strong>
@@ -1727,7 +1770,7 @@ async function exportarOrdemServicoPDF(ordemId) {
         // Logo
         try {
             const respostaLogo = await fetch(
-                `/oficina/${ordem.oficina?.id || 1}/logo`
+                `/oficina/${ordem.oficina?.id}/logo`
             );
 
             if (respostaLogo.ok) {
@@ -1742,12 +1785,12 @@ async function exportarOrdemServicoPDF(ordemId) {
                 });
 
                 doc.addImage(
-                    logoData,
-                    "JPEG",
-                    15,
-                    6,
+                   logoData,
+                      "PNG",
+                      15,
+                     6,
                     32,
-                    30
+                       30
                 );
             }
         } catch (erroLogo) {
@@ -1791,7 +1834,7 @@ async function exportarOrdemServicoPDF(ordemId) {
         doc.setFont(undefined, "bold");
 
         doc.text(
-            `ORDEM #${ordem.id}`,
+            `ORDEM #${ordem.numero}`,
             195,
             16,
             { align: "right" }

@@ -16,12 +16,13 @@ public class VeiculoService {
         this.veiculoRepository = veiculoRepository;
     }
 
-    public List<Veiculo> listarTodos() {
-        return veiculoRepository.findAll();
+    public List<Veiculo> listarTodos(Long oficinaId) {
+        return veiculoRepository.findByOficinaId(oficinaId);
     }
+
     public List<Veiculo> listarPorCliente(Long clienteId) {
-    return veiculoRepository.findByClienteId(clienteId);
-}
+        return veiculoRepository.findByClienteId(clienteId);
+    }
 
     public Veiculo buscarPorId(Long id) {
         return veiculoRepository.findById(id).orElse(null);

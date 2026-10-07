@@ -16,6 +16,8 @@ public class OrdemServico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long numero;
+
     private LocalDateTime dataEntrada;
 
     private String problemaRelatado;
@@ -43,6 +45,14 @@ public class OrdemServico {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Long numero) {
+        this.numero = numero;
     }
 
     public LocalDateTime getDataEntrada() {

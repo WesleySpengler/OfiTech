@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OfiTech - Criar conta</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h1>OfiTech</h1>
+
+        <h2>Criar conta</h2>
+
+        <form id="formCadastro">
+
+            <input type="text" id="nome" placeholder="Nome" required>
+
+            <input type="email" id="email" placeholder="E-mail" required>
+
+            <input type="password" id="senha" placeholder="Senha" required>
+
+            <input type="text" id="nomeOficina" placeholder="Nome da oficina" required>
+
+            <input type="text" id="cnpj" placeholder="CNPJ">
+
+            <input type="text" id="telefone" placeholder="Telefone">
+
+            <button type="submit">Criar conta</button>
+
+        </form>
+
+        <p>
+            Já possui uma conta?
+            <a href="/login.html">Entrar</a>
+        </p>
+
+    </div>
+
+    <script>
+
+        document.getElementById("formCadastro").addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const cadastro = {
+
+                nome: document.getElementById("nome").value,
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value,
+                nomeOficina: document.getElementById("nomeOficina").value,
+                cnpj: document.getElementById("cnpj").value,
+                telefone: document.getElementById("telefone").value
+
+            };
+
+            try {
+
+                const resposta = await fetch("/cadastro", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(cadastro)
+
+                });
+
+                if (resposta.ok) {
+
+                    alert("Conta criada com sucesso!");
+
+                } else {
+
+                    alert("Não foi possível criar a conta.");
+
+                }
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                alert("Erro ao conectar com o OfiTech.");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+

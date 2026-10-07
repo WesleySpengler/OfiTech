@@ -3,7 +3,7 @@ package com.ofitech.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,21 +14,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ofitech.model.OrdemServico;
+import com.ofitech.model.Usuario;
 import com.ofitech.service.OrdemServicoService;
+import com.ofitech.service.UsuarioService;
 
 @RestController
 @RequestMapping("/ordens-servico")
 public class OrdemServicoController {
 
     private final OrdemServicoService ordemServicoService;
+    private final UsuarioService usuarioService;
 
-    public OrdemServicoController(OrdemServicoService ordemServicoService) {
+    public OrdemServicoController(
+            OrdemServicoService ordemServicoService,
+            UsuarioService usuarioService) {
+
         this.ordemServicoService = ordemServicoService;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
-    public List<OrdemServico> listarTodas() {
-        return ordemServicoService.listarTodas();
+    public List<OrdemServico> listarTodas(Authentication authentication) {
+
+        Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
+
+        return ordemServicoService.listarTodas(
+                usuario.getOficina().getId()
+        );
     }
 
     @GetMapping("/{id}")
@@ -37,7 +49,14 @@ public class OrdemServicoController {
     }
 
     @PostMapping
-    public OrdemServico salvar(@RequestBody OrdemServico ordemServico) {
+    public OrdemServico salvar(
+            @RequestBody OrdemServico ordemServico,
+            Authentication authentication) {
+
+        Usuario usuario = usuarioService.buscarPorEmail(authentication.getName());
+
+        ordemServico.setOficina(usuario.getOficina());
+
         return ordemServicoService.salvar(ordemServico);
     }
 
@@ -59,7 +78,6 @@ public class OrdemServicoController {
         ordemExistente.setStatus(ordemServico.getStatus());
         ordemExistente.setCliente(ordemServico.getCliente());
         ordemExistente.setVeiculo(ordemServico.getVeiculo());
-        ordemExistente.setOficina(ordemServico.getOficina());
 
         return ordemServicoService.salvar(ordemExistente);
     }
@@ -69,8 +87,9 @@ public class OrdemServicoController {
         ordemServicoService.excluir(id);
         return "Ordem de serviço excluída com sucesso!";
     }
+
     @GetMapping("/{id}/total")
-public BigDecimal calcularTotal(@PathVariable Long id) {
-    return ordemServicoService.calcularTotal(id);
-}
+    public BigDecimal calcularTotal(@PathVariable Long id) {
+        return ordemServicoService.calcularTotal(id);
+    }
 }

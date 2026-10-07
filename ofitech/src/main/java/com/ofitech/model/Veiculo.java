@@ -24,6 +24,10 @@ public class Veiculo {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "oficina_id")
+    private Oficina oficina;
+
     public Veiculo() {
     }
 
@@ -87,5 +91,13 @@ public class Veiculo {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public Oficina getOficina() {
+        return oficina;
+    }
+
+    public void setOficina(Oficina oficina) {
+        this.oficina = oficina;
     }
 }

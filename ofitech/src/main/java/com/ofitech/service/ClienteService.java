@@ -16,8 +16,8 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    public List<Cliente> listarTodos() {
-        return clienteRepository.findAll();
+    public List<Cliente> listarTodos(Long oficinaId) {
+        return clienteRepository.findByOficinaId(oficinaId);
     }
 
     public Cliente buscarPorId(Long id) {

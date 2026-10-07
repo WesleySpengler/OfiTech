@@ -9,4 +9,6 @@ import com.ofitech.model.Veiculo;
 public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
 
     List<Veiculo> findByClienteId(Long clienteId);
+
+    List<Veiculo> findByOficinaId(Long oficinaId);
 }
