@@ -1,10 +1,12 @@
 package com.ofitech.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 
 @Entity
 public class Oficina {
@@ -21,7 +23,10 @@ public class Oficina {
     private String endereco;
     private String cidade;
     private String estado;
-    @Lob
+
+
+    @JsonIgnore
+    @Column(name = "logotipo", columnDefinition = "bytea")
     private byte[] logo;
 
     public Oficina() {
@@ -43,9 +48,11 @@ public class Oficina {
     public Long getId() {
         return id;
     }
-public void setId(Long id) {
-    this.id = id;
-}
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getNomeEmpresa() {
         return nomeEmpresa;
     }
@@ -109,12 +116,12 @@ public void setId(Long id) {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
+
     public byte[] getLogo() {
         return logo;
     }
 
     public void setLogo(byte[] logo) {
-    this.logo = logo;
+        this.logo = logo;
     }
 }
