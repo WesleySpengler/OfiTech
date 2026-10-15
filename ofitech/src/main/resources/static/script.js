@@ -115,14 +115,20 @@ async function carregarOficina() {
             return;
         }
 
-        if (oficina.logo) {
+      const previewLogo =
+    document.getElementById("previewLogoOficina");
 
-            const previewLogo =
-                document.getElementById("previewLogoOficina");
+previewLogo.onerror = function () {
+    this.style.display = "none";
+};
 
-            previewLogo.src = `/oficina/${oficina.id}/logo`;
-            previewLogo.style.display = "block";
-        }
+previewLogo.onload = function () {
+    this.style.display = "block";
+};
+
+previewLogo.src = `/oficina/${oficina.id}/logo`;
+
+
 
         document.getElementById("nomeEmpresa").value =
             oficina.nomeEmpresa || "";
