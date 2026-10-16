@@ -7,80 +7,69 @@
 
     <title>OfiTech - Login</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="login-container">
+<div class="login-pagina">
 
-        <div class="login-logo">
-            <div class="login-logo-icon">
-                
+    <aside class="login-lateral">
+        <div class="marca">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                <path d="M17 2l13 7.5v15L17 32 4 24.5v-15z" fill="none" stroke="#f5b700" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="17" cy="17" r="5.5" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+            </svg>
+            <div><h1>OfiTech</h1><p>Gestão para oficinas mecânicas</p></div>
+        </div>
+        <div>
+            <h2>Cada carro com sua ordem de serviço em dia.</h2>
+            <p>Clientes, veículos, peças e serviços em um só lugar.</p>
+            <span class="placa" aria-hidden="true">OFI 2T25</span>
+        </div>
+        <span></span>
+    </aside>
+
+    <main class="login-principal">
+
+        <div class="login-container">
+
+            <div class="login-titulo">
+                <h1>Entrar</h1>
+                <p>Acesse sua conta para continuar.</p>
             </div>
 
-            <h1>OfiTech</h1>
+            <form method="post" action="/login">
 
-            <p>Gestão inteligente para sua oficina</p>
-        </div>
+                <div>
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="username" placeholder="seuemail@exemplo.com" autocomplete="email" required>
+                </div>
 
-        <div class="login-titulo">
-            <h2>Entrar</h2>
+                <div>
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="password" placeholder="Digite sua senha" autocomplete="current-password" required>
+                </div>
 
-            <p>
-                Acesse sua conta para continuar
-            </p>
-        </div>
+                <button type="submit">Entrar</button>
 
-        <form method="post" action="/login">
+            </form>
 
-            <label for="email">
-                E-mail
-            </label>
+            <div class="login-cadastro">
+                <span>Ainda não possui uma conta?</span>
+                <a href="/cadastro.html">Criar conta</a>
+            </div>
 
-            <input
-                type="email"
-                id="email"
-                name="username"
-                placeholder="seuemail@exemplo.com"
-                autocomplete="email"
-                required
-            >
-
-            <label for="senha">
-                Senha
-            </label>
-
-            <input
-                type="password"
-                id="senha"
-                name="password"
-                placeholder="Digite sua senha"
-                autocomplete="current-password"
-                required
-            >
-
-            <button type="submit">
-                Entrar
-            </button>
-
-        </form>
-
-        <div class="login-cadastro">
-
-            <span>Ainda não possui uma conta?</span>
-
-            <a href="/cadastro.html">
-                Criar conta
-            </a>
+            <div class="login-rodape">OfiTech - Gestão para oficinas mecânicas</div>
 
         </div>
 
-        <div class="login-rodape">
-            OfiTech • Gestão para oficinas mecânicas
-        </div>
+    </main>
 
-    </div>
+</div>
 
 </body>
 

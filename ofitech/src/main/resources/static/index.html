@@ -7,536 +7,419 @@
 
     <title>OfiTech - Gestão de Oficinas</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <header class="topo">
-
         <div class="topo-conteudo">
 
-            <div>
-                <h1>OfiTech</h1>
-                <p>Sistema de Gestão para Oficinas Mecânicas</p>
+            <div class="marca">
+                <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                    <path d="M17 2l13 7.5v15L17 32 4 24.5v-15z" fill="none" stroke="#f5b700" stroke-width="2.5" stroke-linejoin="round"/>
+                    <circle cx="17" cy="17" r="5.5" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+                </svg>
+                <div>
+                    <h1>OfiTech</h1>
+                    <p>Gestão para oficinas mecânicas</p>
+                </div>
             </div>
 
             <nav class="menu">
-
-                <button onclick="mostrarInicio()">
-                    Início
-                </button>
-
-                <button onclick="mostrarClientes()">
-                    Clientes
-                </button>
-
-                <button onclick="mostrarVeiculos()">
-                    Veículos
-                </button>
-                <button onclick="mostrarOrdensServico()">
-                    Ordens de Serviço
-                </button>
-                <button onclick="mostrarOficina()">
-                    Oficina
-                </button>
-                <button onclick="window.location.href='/logout'">
-    Sair
-</button>
-
+                <button data-tela="telaInicio" onclick="mostrarInicio()">Início</button>
+                <button data-tela="telaClientes" onclick="mostrarClientes()">Clientes</button>
+                <button data-tela="telaVeiculos" onclick="mostrarVeiculos()">Veículos</button>
+                <button data-tela="telaOrdensServico" onclick="mostrarOrdensServico()">Ordens de Serviço</button>
+                <button data-tela="telaOficina" onclick="mostrarOficina()">Oficina</button>
+                <button class="sair" onclick="window.location.href='/logout'">Sair</button>
             </nav>
 
         </div>
-
     </header>
-
 
     <main class="container">
 
         <!-- OFICINA -->
-
         <section id="telaOficina" style="display: none;">
-
-            <div class="resultado">
+            <div class="painel">
 
                 <div class="cabecalho-secao">
-
                     <div>
                         <h2>Dados da Oficina</h2>
-
-                        <p>
-                            Cadastre os dados da sua oficina.
-                        </p>
+                        <p>Cadastre os dados da sua oficina.</p>
                     </div>
-
                 </div>
 
                 <div id="formularioOficina">
+                    <form class="grade-form" onsubmit="salvarOficina(event)">
 
-                    <h3>Cadastro da Oficina</h3>
+                        <div>
+                            <label for="nomeEmpresa">Nome da empresa</label>
+                            <input type="text" id="nomeEmpresa" required>
+                        </div>
 
-                    <form onsubmit="salvarOficina(event)">
+                        <div>
+                            <label for="nomeFantasia">Nome fantasia</label>
+                            <input type="text" id="nomeFantasia" required>
+                        </div>
 
-                        <label for="nomeEmpresa">
-                            Nome da empresa
-                        </label>
-                        <input type="text" id="nomeEmpresa" required>
+                        <div class="campo-largo">
+                            <label for="logoOficina">Logo da oficina</label>
+                            <input type="file" id="logoOficina" accept="image/png, image/jpeg, image/webp">
+                            <img id="previewLogoOficina" class="logo-preview" style="display: none;" alt="Logo da oficina">
+                        </div>
 
+                        <div>
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" id="cnpj">
+                        </div>
 
-                        <label for="nomeFantasia">
-                            Nome fantasia
-                        </label>
-                        <input type="text" id="nomeFantasia" required>
+                        <div>
+                            <label for="telefoneOficina">Telefone</label>
+                            <input type="text" id="telefoneOficina">
+                        </div>
 
-                        <label for="logoOficina">
-                            Logo da oficina
-                        </label>
+                        <div class="campo-largo">
+                            <label for="emailOficina">E-mail</label>
+                            <input type="email" id="emailOficina">
+                        </div>
 
-                        <input type="file" id="logoOficina" accept="image/png, image/jpeg, image/webp">
-<br>
+                        <div class="campo-largo">
+                            <label for="enderecoOficina">Endereço</label>
+                            <input type="text" id="enderecoOficina">
+                        </div>
 
-<img id="previewLogoOficina"
-     style="display: none; max-width: 200px; max-height: 120px; margin-top: 10px;"
-     alt="Logo da oficina">
+                        <div>
+                            <label for="cidadeOficina">Cidade</label>
+                            <input type="text" id="cidadeOficina">
+                        </div>
 
-                        <label for="cnpj">
-                            CNPJ
-                        </label>
-                        <input type="text" id="cnpj">
+                        <div>
+                            <label for="estadoOficina">Estado</label>
+                            <input type="text" id="estadoOficina" maxlength="2">
+                        </div>
 
-
-                        <label for="telefoneOficina">
-                            Telefone
-                        </label>
-                        <input type="text" id="telefoneOficina">
-
-
-                        <label for="emailOficina">
-                            E-mail
-                        </label>
-                        <input type="email" id="emailOficina">
-
-
-                        <label for="enderecoOficina">
-                            Endereço
-                        </label>
-                        <input type="text" id="enderecoOficina">
-
-
-                        <label for="cidadeOficina">
-                            Cidade
-                        </label>
-                        <input type="text" id="cidadeOficina">
-
-
-                        <label for="estadoOficina">
-                            Estado
-                        </label>
-                        <input type="text" id="estadoOficina" maxlength="2">
-
-
-                        <button type="submit">
-                            Salvar dados da oficina
-                        </button>
+                        <div class="form-acoes">
+                            <button type="submit">Salvar dados da oficina</button>
+                        </div>
 
                     </form>
-
                 </div>
 
             </div>
-
         </section>
-        <!-- INÍCIO -->
 
+        <!-- INÍCIO -->
         <section id="telaInicio">
 
             <section class="boas-vindas">
+                <h2>Painel da oficina</h2>
+                <p>Cadastre clientes e veículos e acompanhe cada ordem de serviço, da entrada ao pagamento.</p>
+            </section>
 
-    <div class="boas-vindas-texto">
+            <section class="atalhos">
 
-        <span class="boas-vindas-tag">
-            PAINEL DA OFICINA
-        </span>
-
-        <h2>Olá! 👋</h2>
-
-        <p>
-            Bem-vindo ao OfiTech.
-            Gerencie sua oficina de forma simples e organizada.
-        </p>
-
-    </div>
-
-</section>
-
-
-            <section class="cards">
-
-                <div class="card card-clientes">
-
-                    <h3>Clientes</h3>
-
-                    <p>
-                        Cadastre e consulte os clientes
-                        da oficina.
-                    </p>
-
-                    <button onclick="mostrarClientes()">
-                        Acessar clientes
-                    </button>
-
-                </div>
-
-
-                <div class="card card-veiculos">
-
-                    <h3>Veículos</h3>
-
-                    <p>
-                        Gerencie os veículos vinculados
-                        aos seus clientes.
-                    </p>
-
-                    <button onclick="mostrarVeiculos()">
-                        Acessar veículos
-                    </button>
-
-                </div>
-
-
-                <div class="card card-os">
-
+                <div class="atalho atalho-os">
                     <h3>Ordens de Serviço</h3>
+                    <p>Controle serviços, peças, valores e status de cada carro na oficina.</p>
+                    <button onclick="mostrarOrdensServico()">Abrir ordens de serviço</button>
+                </div>
 
-                    <p>
-                        Controle serviços, peças,
-                        valores e status.
-                    </p>
-                    <button onclick="mostrarOrdensServico()">
-                        Ordens de Serviço
-                    </button>
+                <div class="atalho">
+                    <h3>Clientes</h3>
+                    <p>Cadastre e consulte os clientes da oficina.</p>
+                    <button class="btn-sec" onclick="mostrarClientes()">Acessar clientes</button>
+                </div>
 
+                <div class="atalho">
+                    <h3>Veículos</h3>
+                    <p>Gerencie os veículos vinculados aos clientes.</p>
+                    <button class="btn-sec" onclick="mostrarVeiculos()">Acessar veículos</button>
                 </div>
 
             </section>
 
         </section>
 
-
         <!-- CLIENTES -->
-
         <section id="telaClientes" style="display: none;">
-
-            <div class="resultado">
+            <div class="painel">
 
                 <div class="cabecalho-secao">
-
                     <div>
                         <h2>Clientes</h2>
-
-                        <p>
-                            Clientes cadastrados na oficina.
-                        </p>
+                        <p>Clientes cadastrados na oficina.</p>
                     </div>
-
                     <div>
-                        <button onclick="mostrarFormularioCliente()">
-                            + Novo cliente
-                        </button>
-
-                        <button onclick="listarClientes()">
-                            Atualizar lista
-                        </button>
+                        <button onclick="mostrarFormularioCliente()">+ Novo cliente</button>
+                        <button onclick="listarClientes()">Atualizar lista</button>
                     </div>
-
                 </div>
 
-                <div id="formularioCliente" style="display: none;">
+                <div id="formularioCliente" class="formulario-bloco" style="display: none;">
 
                     <h3 id="tituloFormularioCliente">Novo Cliente</h3>
 
-                    <form onsubmit="salvarCliente(event)">
+                    <form class="grade-form" onsubmit="salvarCliente(event)">
 
-                        <label for="nome">Nome</label>
-                        <input type="text" id="nome" required>
+                        <div class="campo-largo">
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" required>
+                        </div>
 
-                        <label for="cpf">CPF</label>
-                        <input type="text" id="cpf">
+                        <div>
+                            <label for="cpf">CPF</label>
+                            <input type="text" id="cpf">
+                        </div>
 
-                        <label for="telefone">Telefone</label>
-                        <input type="text" id="telefone">
+                        <div>
+                            <label for="telefone">Telefone</label>
+                            <input type="text" id="telefone">
+                        </div>
 
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email">
+                        <div class="campo-largo">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email">
+                        </div>
 
-                        <button type="submit">
-                            Salvar cliente
-                        </button>
-
-                        <button type="button" onclick="fecharFormularioCliente()">
-                            Cancelar
-                        </button>
+                        <div class="form-acoes">
+                            <button type="submit">Salvar cliente</button>
+                            <button type="button" onclick="fecharFormularioCliente()">Cancelar</button>
+                        </div>
 
                     </form>
 
                 </div>
 
                 <div id="listaClientes">
-
-                    Clique em "Atualizar lista"
-                    para consultar os clientes.
-
+                    Clique em "Atualizar lista" para consultar os clientes.
                 </div>
 
             </div>
-
         </section>
+
         <!-- VEÍCULOS -->
-
         <section id="telaVeiculos" style="display: none;">
-
-            <div class="resultado">
+            <div class="painel">
 
                 <div class="cabecalho-secao">
-
                     <div>
                         <h2>Veículos</h2>
-
-                        <p>
-                            Veículos cadastrados na oficina.
-                        </p>
+                        <p>Veículos cadastrados na oficina.</p>
                     </div>
-
                     <div>
-                        <button onclick="mostrarFormularioVeiculo()">
-                            + Novo veículo
-                        </button>
-
-                        <button onclick="listarVeiculos()">
-                            Atualizar lista
-                        </button>
+                        <button onclick="mostrarFormularioVeiculo()">+ Novo veículo</button>
+                        <button onclick="listarVeiculos()">Atualizar lista</button>
                     </div>
-
                 </div>
 
-                <div id="formularioVeiculo" style="display: none;">
+                <div id="formularioVeiculo" class="formulario-bloco" style="display: none;">
 
                     <h3>Novo Veículo</h3>
 
-                    <form onsubmit="salvarVeiculo(event)">
+                    <form class="grade-form" onsubmit="salvarVeiculo(event)">
 
-                        <label for="marca">Marca</label>
-                        <input type="text" id="marca" required>
+                        <div>
+                            <label for="marca">Marca</label>
+                            <input type="text" id="marca" required>
+                        </div>
 
-                        <label for="modelo">Modelo</label>
-                        <input type="text" id="modelo" required>
+                        <div>
+                            <label for="modelo">Modelo</label>
+                            <input type="text" id="modelo" required>
+                        </div>
 
-                        <label for="ano">Ano</label>
-                        <input type="number" id="ano" required>
+                        <div>
+                            <label for="ano">Ano</label>
+                            <input type="number" id="ano" required>
+                        </div>
 
-                        <label for="placa">Placa</label>
-                        <input type="text" id="placa" required>
+                        <div>
+                            <label for="placa">Placa</label>
+                            <input type="text" id="placa" required>
+                        </div>
 
-                        <label for="quilometragem">Quilometragem</label>
-                        <input type="number" id="quilometragem" required>
+                        <div>
+                            <label for="quilometragem">Quilometragem</label>
+                            <input type="number" id="quilometragem" required>
+                        </div>
 
-                        <label for="clienteVeiculo">Cliente</label>
-                        <select id="clienteVeiculo" required>
-                            <option value="">Selecione o cliente</option>
-                        </select>
+                        <div>
+                            <label for="clienteVeiculo">Cliente</label>
+                            <select id="clienteVeiculo" required>
+                                <option value="">Selecione o cliente</option>
+                            </select>
+                        </div>
 
-                        <button type="submit">
-                            Salvar veículo
-                        </button>
-
-                        <button type="button" onclick="fecharFormularioVeiculo()">
-                            Cancelar
-                        </button>
+                        <div class="form-acoes">
+                            <button type="submit">Salvar veículo</button>
+                            <button type="button" onclick="fecharFormularioVeiculo()">Cancelar</button>
+                        </div>
 
                     </form>
 
                 </div>
 
                 <div id="listaVeiculos">
-
-                    Clique em "Atualizar lista"
-                    para consultar os veículos.
-
+                    Clique em "Atualizar lista" para consultar os veículos.
                 </div>
 
             </div>
-
         </section>
-        <section id="telaOrdensServico" style="display: none;">
 
-            <div class="resultado">
+        <!-- ORDENS DE SERVIÇO -->
+        <section id="telaOrdensServico" style="display: none;">
+            <div class="painel">
 
                 <div class="cabecalho-secao">
-
                     <div>
                         <h2>Ordens de Serviço</h2>
                         <p>Gerencie as ordens de serviço da oficina.</p>
                     </div>
-
                     <div>
-                        <button onclick="mostrarFormularioOrdemServico()">
-                            + Nova ordem de serviço
-                        </button>
-
-                        <button onclick="listarOrdensServico()">
-                            Atualizar lista
-                        </button>
+                        <button onclick="mostrarFormularioOrdemServico()">+ Nova ordem de serviço</button>
+                        <button onclick="listarOrdensServico()">Atualizar lista</button>
                     </div>
-
                 </div>
 
-                <div id="formularioOrdemServico" style="display: none;">
+                <div id="formularioOrdemServico" class="formulario-bloco" style="display: none;">
 
                     <h3>Nova Ordem de Serviço</h3>
 
-                    <form onsubmit="salvarOrdemServico(event)">
+                    <form class="grade-form" onsubmit="salvarOrdemServico(event)">
 
-                        <label for="clienteOrdemServico">
-                            Cliente
-                        </label>
+                        <div>
+                            <label for="clienteOrdemServico">Cliente</label>
+                            <select id="clienteOrdemServico" required>
+                                <option value="">Selecione o cliente</option>
+                            </select>
+                        </div>
 
-                        <select id="clienteOrdemServico" required>
-                            <option value="">
-                                Selecione o cliente
-                            </option>
-                        </select>
+                        <div>
+                            <label for="veiculoOrdemServico">Veículo</label>
+                            <select id="veiculoOrdemServico" required>
+                                <option value="">Selecione o veículo</option>
+                            </select>
+                        </div>
 
-                        <label for="veiculoOrdemServico">
-                            Veículo
-                        </label>
+                        <div class="form-acoes">
+                            <button type="button" class="btn-sec" onclick="mostrarCadastroVeiculoNaOS()">+ Cadastrar novo veículo</button>
+                        </div>
 
-                        <select id="veiculoOrdemServico" required>
-                            <option value="">
-                                Selecione o veículo
-                            </option>
-                        </select>
-
-                        <button type="button" onclick="mostrarCadastroVeiculoNaOS()">
-                            + Cadastrar novo veículo
-                        </button>
-
-                        <div id="cadastroVeiculoNaOS" style="display: none;">
+                        <div id="cadastroVeiculoNaOS" class="campo-largo" style="display: none;">
 
                             <h4>Novo veículo</h4>
 
-                            <label for="marcaVeiculoOS">
-                                Marca
-                            </label>
+                            <label for="marcaVeiculoOS">Marca</label>
                             <input type="text" id="marcaVeiculoOS">
 
-                            <label for="modeloVeiculoOS">
-                                Modelo
-                            </label>
+                            <label for="modeloVeiculoOS">Modelo</label>
                             <input type="text" id="modeloVeiculoOS">
 
-                            <label for="anoVeiculoOS">
-                                Ano
-                            </label>
+                            <label for="anoVeiculoOS">Ano</label>
                             <input type="number" id="anoVeiculoOS">
 
-                            <label for="placaVeiculoOS">
-                                Placa
-                            </label>
+                            <label for="placaVeiculoOS">Placa</label>
                             <input type="text" id="placaVeiculoOS">
 
-                            <label for="quilometragemVeiculoOS">
-                                Quilometragem
-                            </label>
+                            <label for="quilometragemVeiculoOS">Quilometragem</label>
                             <input type="number" id="quilometragemVeiculoOS">
 
-                            <button type="button" onclick="salvarVeiculoNaOS()">
-                                Salvar veículo
-                            </button>
-
-                            <button type="button" onclick="fecharCadastroVeiculoNaOS()">
-                                Cancelar
-                            </button>
+                            <button type="button" onclick="salvarVeiculoNaOS()">Salvar veículo</button>
+                            <button type="button" onclick="fecharCadastroVeiculoNaOS()">Cancelar</button>
 
                         </div>
 
+                        <div class="campo-largo">
+                            <label for="problemaRelatado">Problema relatado</label>
+                            <textarea id="problemaRelatado" required></textarea>
+                        </div>
 
-                        <label for="problemaRelatado">
-                            Problema relatado
-                        </label>
+                        <div class="campo-largo">
+                            <label for="diagnostico">Diagnóstico</label>
+                            <textarea id="diagnostico"></textarea>
+                        </div>
 
-                        <textarea id="problemaRelatado" required></textarea>
+                        <div class="campo-largo">
+                            <label for="observacoes">Observações</label>
+                            <textarea id="observacoes"></textarea>
+                        </div>
 
+                        <div>
+                            <label for="statusOrdemServico">Status</label>
+                            <select id="statusOrdemServico" required>
+                                <option value="ABERTA">Aberta</option>
+                                <option value="EM_ANDAMENTO">Em andamento</option>
+                                <option value="FINALIZADA">Finalizada</option>
+                                <option value="ENTREGUE">Entregue</option>
+                            </select>
+                        </div>
 
-                        <label for="diagnostico">
-                            Diagnóstico
-                        </label>
-
-                        <textarea id="diagnostico"></textarea>
-
-
-                        <label for="observacoes">
-                            Observações
-                        </label>
-
-                        <textarea id="observacoes"></textarea>
-
-
-                        <label for="statusOrdemServico">
-                            Status
-                        </label>
-
-                        <select id="statusOrdemServico" required>
-
-                            <option value="ABERTA">
-                                Aberta
-                            </option>
-
-                            <option value="EM_ANDAMENTO">
-                                Em andamento
-                            </option>
-
-                            <option value="FINALIZADA">
-                                Finalizada
-                            </option>
-
-                            <option value="ENTREGUE">
-                                Entregue
-                            </option>
-
-                        </select>
-
-
-                        <button type="submit">
-                            Salvar ordem de serviço
-                        </button>
-
-                       <button
-                                                    
-                        type="button"
-                        class="btn-cancelar"
-                        onclick="fecharFormularioOrdemServico()">
-                        Cancelar
-                        </button>
+                        <div class="form-acoes">
+                            <button type="submit">Salvar ordem de serviço</button>
+                            <button type="button" class="btn-cancelar" onclick="fecharFormularioOrdemServico()">Cancelar</button>
+                        </div>
 
                     </form>
 
                 </div>
 
-
                 <div id="listaOrdensServico">
-
                     Clique em "Atualizar lista" para consultar as ordens de serviço.
-
                 </div>
 
             </div>
-
         </section>
 
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        /* Marca no menu a tela aberta e garante que a tela "Oficina"
+           seja escondida ao trocar de aba. */
+        (function () {
+            const telas = {
+                mostrarInicio: "telaInicio",
+                mostrarClientes: "telaClientes",
+                mostrarVeiculos: "telaVeiculos",
+                mostrarOrdensServico: "telaOrdensServico",
+                mostrarOficina: "telaOficina"
+            };
+
+            function marcarMenu(id) {
+                document.querySelectorAll(".menu button[data-tela]").forEach(function (botao) {
+                    const ativo = botao.dataset.tela === id;
+                    botao.classList.toggle("ativo", ativo);
+                    if (ativo) {
+                        botao.setAttribute("aria-current", "page");
+                    } else {
+                        botao.removeAttribute("aria-current");
+                    }
+                });
+            }
+
+            Object.keys(telas).forEach(function (nome) {
+                const original = window[nome];
+                if (typeof original !== "function") return;
+
+                window[nome] = function () {
+                    const resultado = original.apply(this, arguments);
+                    if (telas[nome] !== "telaOficina") {
+                        document.getElementById("telaOficina").style.display = "none";
+                    }
+                    marcarMenu(telas[nome]);
+                    return resultado;
+                };
+            });
+
+            marcarMenu("telaInicio");
+        })();
+    </script>
 
 </body>
 

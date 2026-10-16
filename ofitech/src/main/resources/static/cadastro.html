@@ -7,126 +7,91 @@
 
     <title>OfiTech - Criar conta</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="login-container cadastro-container">
+<div class="login-pagina">
 
-        <div class="login-logo">
+    <aside class="login-lateral">
+        <div class="marca">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                <path d="M17 2l13 7.5v15L17 32 4 24.5v-15z" fill="none" stroke="#f5b700" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="17" cy="17" r="5.5" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+            </svg>
+            <div><h1>OfiTech</h1><p>Gestão para oficinas mecânicas</p></div>
+        </div>
+        <div>
+            <h2>Cada carro com sua ordem de serviço em dia.</h2>
+            <p>Clientes, veículos, peças e serviços em um só lugar.</p>
+            <span class="placa" aria-hidden="true">OFI 2T25</span>
+        </div>
+        <span></span>
+    </aside>
 
-            <div class="login-logo-icon">
-                O
+    <main class="login-principal">
+
+        <div class="login-container cadastro-container">
+
+            <div class="login-titulo">
+                <h1>Criar conta</h1>
+                <p>Cadastre sua oficina para começar.</p>
             </div>
 
-            <h1>OfiTech</h1>
+            <form id="formCadastro">
 
-            <p>Gestão inteligente para sua oficina</p>
+                <div>
+                    <label for="nome">Seu nome</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome" required>
+                </div>
 
-        </div>
+                <div>
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
 
-        <div class="login-titulo">
+                <div>
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="Crie uma senha" required>
+                </div>
 
-            <h2>Criar conta</h2>
+                <div class="cadastro-divisao">Dados da oficina</div>
 
-            <p>
-                Cadastre sua oficina para começar
-            </p>
+                <div>
+                    <label for="nomeOficina">Nome da oficina</label>
+                    <input type="text" id="nomeOficina" placeholder="Nome da sua oficina" required>
+                </div>
 
-        </div>
+                <div>
+                    <label for="cnpj">CNPJ</label>
+                    <input type="text" id="cnpj" placeholder="Opcional">
+                </div>
 
-        <form id="formCadastro">
+                <div>
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" placeholder="Opcional">
+                </div>
 
-            <label for="nome">
-                Seu nome
-            </label>
+                <button type="submit">Criar conta</button>
 
-            <input
-                type="text"
-                id="nome"
-                placeholder="Digite seu nome"
-                required
-            >
+            </form>
 
-            <label for="email">
-                E-mail
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                placeholder="seuemail@exemplo.com"
-                required
-            >
-
-            <label for="senha">
-                Senha
-            </label>
-
-            <input
-                type="password"
-                id="senha"
-                placeholder="Crie uma senha"
-                required
-            >
-
-            <div class="cadastro-divisao">
-                Dados da oficina
+            <div class="login-cadastro">
+                <span>Já possui uma conta?</span>
+                <a href="/login.html">Entrar</a>
             </div>
 
-            <label for="nomeOficina">
-                Nome da oficina
-            </label>
-
-            <input
-                type="text"
-                id="nomeOficina"
-                placeholder="Nome da sua oficina"
-                required
-            >
-
-            <label for="cnpj">
-                CNPJ
-            </label>
-
-            <input
-                type="text"
-                id="cnpj"
-                placeholder="CNPJ (opcional)"
-            >
-
-            <label for="telefone">
-                Telefone
-            </label>
-
-            <input
-                type="text"
-                id="telefone"
-                placeholder="Telefone (opcional)"
-            >
-
-            <button type="submit">
-                Criar conta
-            </button>
-
-        </form>
-
-        <div class="login-cadastro">
-
-            <span>Já possui uma conta?</span>
-
-            <a href="/login.html">
-                Entrar
-            </a>
+            <div class="login-rodape">OfiTech - Gestão para oficinas mecânicas</div>
 
         </div>
 
-        <div class="login-rodape">
-            OfiTech • Gestão para oficinas mecânicas
-        </div>
+    </main>
 
-    </div>
+</div>
 
     <script>
 

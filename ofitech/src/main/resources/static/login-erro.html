@@ -7,31 +7,51 @@
 
     <title>OfiTech - Erro de login</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="login-container login-erro">
+<div class="login-pagina">
 
-        <div class="icone-erro">
-            !
+    <aside class="login-lateral">
+        <div class="marca">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                <path d="M17 2l13 7.5v15L17 32 4 24.5v-15z" fill="none" stroke="#f5b700" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="17" cy="17" r="5.5" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+            </svg>
+            <div><h1>OfiTech</h1><p>Gestão para oficinas mecânicas</p></div>
+        </div>
+        <div>
+            <h2>Cada carro com sua ordem de serviço em dia.</h2>
+            <p>Clientes, veículos, peças e serviços em um só lugar.</p>
+            <span class="placa" aria-hidden="true">OFI 2T25</span>
+        </div>
+        <span></span>
+    </aside>
+
+    <main class="login-principal">
+
+        <div class="login-container login-erro">
+
+            <div class="icone-erro" aria-hidden="true">!</div>
+
+            <div class="login-titulo">
+                <h1>Não foi possível entrar</h1>
+            </div>
+
+            <p>O e-mail ou a senha informados estão incorretos. Verifique seus dados e tente novamente.</p>
+
+            <a class="voltar" href="/login.html">Voltar para o login</a>
+
         </div>
 
-        <h1>OfiTech</h1>
+    </main>
 
-        <h2>Não foi possível entrar</h2>
-
-        <p>
-            O e-mail ou a senha informados estão incorretos.
-            Verifique seus dados e tente novamente.
-        </p>
-
-        <a href="/login.html">
-            Voltar para o login
-        </a>
-
-    </div>
+</div>
 
 </body>
 
